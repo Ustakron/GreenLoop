@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview An AI agent for detecting recyclable waste from a photo.
