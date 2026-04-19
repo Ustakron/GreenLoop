@@ -1,11 +1,7 @@
 
 'use server';
 /**
- * @fileOverview An AI agent for detecting recyclable waste from a photo and estimating points.
- *
- * - aiWasteDetectionUpload - A function that handles the waste detection process.
- * - AiWasteDetectionUploadInput - The input type for the aiWasteDetectionUpload function.
- * - AiWasteDetectionUploadOutput - The return type for the aiWasteDetectionUpload function.
+ * @fileOverview An AI agent for detecting recyclable waste from a photo.
  */
 
 import {ai} from '@/ai/genkit';
@@ -15,7 +11,7 @@ const AiWasteDetectionUploadInputSchema = z.object({
   photoDataUri: z
     .string()
     .describe(
-      "A photo of recyclable waste, as a data URI that must include a MIME type and use Base64 encoding."
+      "A photo as a data URI. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
     ),
 });
 export type AiWasteDetectionUploadInput = z.infer<typeof AiWasteDetectionUploadInputSchema>;
@@ -36,14 +32,14 @@ const AiWasteDetectionUploadOutputSchema = z.object({
 export type AiWasteDetectionUploadOutput = z.infer<typeof AiWasteDetectionUploadOutputSchema>;
 
 const wasteDetectionPrompt = ai.definePrompt({
-  name: 'wasteDetectionPrompt',
+  name: 'wasteDetectionUploadPrompt',
   input: { schema: AiWasteDetectionUploadInputSchema },
   output: { schema: AiWasteDetectionUploadOutputSchema },
-  model: 'googleai/gemini-1.5-flash-latest',
+  model: 'googleai/gemini-1.5-flash',
   prompt: `Identify recyclable waste from the photo. Focus on Plastics, Paper, Metals, and E-Waste.
-Estimate points: Plastics (10-20), Paper (5-15), Metals (20-30), E-Waste (50-100).
+  Estimate quantity and points. Be encouraging. Write the summary in Thai.
 
-Photo: {{media url=photoDataUri}}`,
+  Photo: {{media url=photoDataUri}}`,
 });
 
 const aiWasteDetectionUploadFlow = ai.defineFlow(
@@ -56,11 +52,11 @@ const aiWasteDetectionUploadFlow = ai.defineFlow(
     try {
       const {output} = await wasteDetectionPrompt(input);
       if (!output) {
-        throw new Error('AI did not return a valid output.');
+        throw new Error('AI could not analyze the image.');
       }
       return output;
-    } catch (error: any) {
-      console.error('Genkit flow error:', error);
+    } catch (error) {
+      console.error('Upload Flow error:', error);
       throw error;
     }
   }
