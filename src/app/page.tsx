@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -30,7 +31,9 @@ import {
   Share2,
   Trophy,
   Trees,
-  TrendingUp
+  TrendingUp,
+  Info,
+  Coins
 } from "lucide-react";
 
 type Screen = "home" | "checklist" | "scan-choice" | "camera" | "upload" | "booking" | "confirmation" | "rewards";
@@ -167,6 +170,44 @@ export default function GreenLoopApp() {
         </div>
       </section>
 
+      <section className="mb-8 bg-accent/5 p-5 rounded-[2rem] border border-accent/20">
+        <div className="flex items-center gap-2 mb-3">
+          <Coins className="text-accent" size={20} />
+          <h2 className="text-lg font-bold font-headline">Point Guide</h2>
+        </div>
+        <p className="text-[11px] text-muted-foreground mb-4">Earn points for every item you recycle. Points can be exchanged for exclusive rewards and vouchers!</p>
+        <div className="grid grid-cols-2 gap-2">
+          <div className="bg-white/80 p-2 rounded-xl text-[10px] flex items-center gap-2">
+             <span className="text-lg">🧴</span>
+             <div>
+               <p className="font-bold">Plastics</p>
+               <p className="text-primary">10-20 pts</p>
+             </div>
+          </div>
+          <div className="bg-white/80 p-2 rounded-xl text-[10px] flex items-center gap-2">
+             <span className="text-lg">📦</span>
+             <div>
+               <p className="font-bold">Paper</p>
+               <p className="text-primary">5-15 pts</p>
+             </div>
+          </div>
+          <div className="bg-white/80 p-2 rounded-xl text-[10px] flex items-center gap-2">
+             <span className="text-lg">🥫</span>
+             <div>
+               <p className="font-bold">Metals</p>
+               <p className="text-primary">20-30 pts</p>
+             </div>
+          </div>
+          <div className="bg-white/80 p-2 rounded-xl text-[10px] flex items-center gap-2">
+             <span className="text-lg">📱</span>
+             <div>
+               <p className="font-bold">E-Waste</p>
+               <p className="text-primary">50-100 pts</p>
+             </div>
+          </div>
+        </div>
+      </section>
+
       <section>
         <h2 className="text-lg font-bold mb-4 px-2 font-headline">Waste We Accept</h2>
         <div className="grid grid-cols-2 gap-3">
@@ -288,8 +329,8 @@ export default function GreenLoopApp() {
         <Card className="rounded-[1.5rem] border-none shadow-md bg-white mb-6 overflow-hidden">
           <div className="bg-primary/5 p-4 border-b border-primary/10">
             <div className="flex justify-between items-center">
-              <span className="text-xs font-bold uppercase text-primary">Est. Points</span>
-              <span className="text-2xl font-bold text-primary">{scanResult.totalPoints} pts</span>
+              <span className="text-xs font-bold uppercase text-primary">Est. Points Earned</span>
+              <span className="text-2xl font-bold text-primary">+{scanResult.totalPoints} pts</span>
             </div>
           </div>
           <CardContent className="p-4">
