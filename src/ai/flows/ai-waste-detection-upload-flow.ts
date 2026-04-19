@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview An AI agent for detecting recyclable waste from a photo and estimating points.
@@ -38,7 +39,7 @@ const wasteDetectionPrompt = ai.definePrompt({
   name: 'wasteDetectionPrompt',
   input: { schema: AiWasteDetectionUploadInputSchema },
   output: { schema: AiWasteDetectionUploadOutputSchema },
-  model: 'gemini-1.5-flash',
+  model: 'googleai/gemini-1.5-flash',
   prompt: `Identify recyclable waste from the photo. Focus on Plastics, Paper, Metals, and E-Waste.
 Estimate points: Plastics (10-20), Paper (5-15), Metals (20-30), E-Waste (50-100).
 
@@ -52,11 +53,16 @@ const aiWasteDetectionUploadFlow = ai.defineFlow(
     outputSchema: AiWasteDetectionUploadOutputSchema,
   },
   async (input) => {
-    const {output} = await wasteDetectionPrompt(input);
-    if (!output) {
-      throw new Error('AI did not return a valid output.');
+    try {
+      const {output} = await wasteDetectionPrompt(input);
+      if (!output) {
+        throw new Error('AI did not return a valid output.');
+      }
+      return output;
+    } catch (error: any) {
+      console.error('Genkit flow error:', error);
+      throw error;
     }
-    return output;
   }
 );
 

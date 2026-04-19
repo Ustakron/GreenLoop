@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview This file implements a Genkit flow for real-time AI waste detection
@@ -77,7 +78,7 @@ const aiWasteDetectionPrompt = ai.definePrompt({
   name: 'aiWasteDetectionPrompt',
   input: {schema: AiWasteDetectionInputSchema},
   output: {schema: AiWasteDetectionOutputSchema},
-  model: 'gemini-1.5-flash',
+  model: 'googleai/gemini-1.5-flash',
   prompt: `You are an expert waste identification AI. Analyze the image and identify recyclable items from the categories below:
 ${wasteTypesFormattedForPrompt}
 
@@ -93,8 +94,16 @@ const aiWasteDetectionLiveCameraFlow = ai.defineFlow(
     outputSchema: AiWasteDetectionOutputSchema,
   },
   async (input) => {
-    const {output} = await aiWasteDetectionPrompt(input);
-    return output!;
+    try {
+      const {output} = await aiWasteDetectionPrompt(input);
+      if (!output) {
+        throw new Error('AI did not return a valid output.');
+      }
+      return output;
+    } catch (error: any) {
+      console.error('Genkit flow error:', error);
+      throw error;
+    }
   }
 );
 
