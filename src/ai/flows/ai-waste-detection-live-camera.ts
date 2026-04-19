@@ -79,7 +79,8 @@ const aiWasteDetectionPrompt = ai.definePrompt({
   - Metal Cans: 3 pts per item
   - E-Waste: 20 pts per item
 
-  Return a list of detected items, the total points, and a encouraging summary in Thai.
+  Return a list of detected items, the total points, and an encouraging summary in English.
+  Example summary sentiment: "Excellent! You've made a great start in waste sorting. Let's keep protecting our planet through recycling together!"
 
   Image: {{media url=photoDataUri}}`,
 });
