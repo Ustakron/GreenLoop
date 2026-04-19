@@ -1,3 +1,577 @@
-export default function Home() {
-  return <></>;
+"use client";
+
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import { 
+  acceptedWasteTypes, 
+  checklistItems, 
+  pickupSlots, 
+  rewardItems, 
+  activityHistory 
+} from "@/lib/greenloop-data";
+import { CameraScanner } from "@/components/camera-scanner";
+import { aiWasteDetectionUpload, type AiWasteDetectionUploadOutput } from "@/ai/flows/ai-waste-detection-upload-flow";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { 
+  Home, 
+  Recycle, 
+  Gift, 
+  User, 
+  CheckCircle2, 
+  ArrowLeft, 
+  Camera, 
+  Upload, 
+  MapPin, 
+  Calendar as CalendarIcon, 
+  Clock, 
+  Share2,
+  Trophy,
+  Trees,
+  TrendingUp
+} from "lucide-react";
+
+type Screen = "home" | "checklist" | "scan-choice" | "camera" | "upload" | "booking" | "confirmation" | "rewards";
+
+export default function GreenLoopApp() {
+  const [currentScreen, setCurrentScreen] = useState<Screen>("home");
+  const [points, setPoints] = useState(840);
+  const [checks, setChecks] = useState<Record<string, boolean>>({});
+  const [scanResult, setScanResult] = useState<AiWasteDetectionUploadOutput | null>(null);
+  const [selectedSlot, setSelectedSlot] = useState(pickupSlots[2]);
+  const [selectedDate, setSelectedDate] = useState("April 22, 2026");
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [rewardCode, setRewardCode] = useState<{ title: string; code: string } | null>(null);
+
+  const nextTierPoints = 1000;
+  const progress = (points / nextTierPoints) * 100;
+
+  const navigate = (screen: Screen) => {
+    setCurrentScreen(screen);
+    window.scrollTo(0, 0);
+  };
+
+  const toggleCheck = (id: string) => {
+    setChecks(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const allChecked = checklistItems.every(item => checks[item.id]);
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsAnalyzing(true);
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const dataUri = reader.result as string;
+      try {
+        const result = await aiWasteDetectionUpload({ photoDataUri: dataUri });
+        setScanResult(result);
+        navigate("booking");
+      } catch (err) {
+        console.error("Upload error:", err);
+      } finally {
+        setIsAnalyzing(false);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleLiveDetection = (result: any) => {
+    setScanResult(result);
+    navigate("booking");
+  };
+
+  const shareImpact = () => {
+    alert("Sharing your impact of 28kg CO2 saved to social media! 🌿🌍");
+  };
+
+  const renderHome = () => (
+    <div className="pb-24 pt-6 px-4 animate-in fade-in slide-in-from-bottom-4">
+      <header className="flex justify-between items-center mb-8">
+        <div>
+          <h1 className="text-2xl font-bold text-primary font-headline">GreenLoop</h1>
+          <p className="text-sm text-muted-foreground">Good morning, Eco Hero! 👋</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Badge variant="secondary" className="bg-primary/10 text-primary border-none py-1">🌿 Eco Member</Badge>
+          <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold border-2 border-white shadow-sm">JD</div>
+        </div>
+      </header>
+
+      <section className="bg-white rounded-[2rem] p-6 shadow-xl shadow-primary/5 mb-8 relative overflow-hidden">
+        <div className="absolute -top-12 -right-12 w-40 h-40 bg-primary/5 rounded-full blur-2xl" />
+        <div className="relative z-10">
+          <div className="flex justify-between items-end mb-4">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1">Current Balance</p>
+              <div className="flex items-baseline gap-1">
+                <span className="text-4xl font-bold font-headline text-primary">{points}</span>
+                <span className="text-sm font-medium text-muted-foreground">pts</span>
+              </div>
+            </div>
+            <div className="text-right">
+              <Badge variant="outline" className="text-[10px] mb-1">Silver Tier</Badge>
+              <p className="text-xs text-muted-foreground">{nextTierPoints - points} pts to Gold 🏆</p>
+            </div>
+          </div>
+          <Progress value={progress} className="h-3 bg-secondary mb-4" />
+          <div className="flex justify-between items-center text-[10px] text-muted-foreground">
+            <span>Progress to Next Tier</span>
+            <span>{Math.round(progress)}%</span>
+          </div>
+        </div>
+      </section>
+
+      <div className="grid grid-cols-2 gap-4 mb-8">
+        <Card className="rounded-[1.5rem] border-none shadow-sm bg-accent/5">
+          <CardContent className="p-4 flex flex-col items-center text-center">
+            <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center mb-2">
+              <Recycle className="text-accent-foreground" size={20} />
+            </div>
+            <span className="text-lg font-bold font-headline">14.2 kg</span>
+            <span className="text-[10px] text-muted-foreground">Recycled This Month</span>
+          </CardContent>
+        </Card>
+        <Card className="rounded-[1.5rem] border-none shadow-sm bg-primary/5">
+          <CardContent className="p-4 flex flex-col items-center text-center">
+            <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center mb-2">
+              <Trees className="text-primary" size={20} />
+            </div>
+            <span className="text-lg font-bold font-headline">3 Trees</span>
+            <span className="text-[10px] text-muted-foreground">Equivalent Saved</span>
+          </CardContent>
+        </Card>
+      </div>
+
+      <section className="mb-8">
+        <h2 className="text-lg font-bold mb-4 px-2 font-headline">Quick Actions</h2>
+        <div className="space-y-4">
+          <button 
+            onClick={() => navigate("checklist")}
+            className="w-full btn-primary"
+          >
+            <Camera size={20} />
+            Scan Waste to Earn
+          </button>
+          <button 
+            onClick={() => navigate("rewards")}
+            className="w-full btn-outline"
+          >
+            <Gift size={20} />
+            Browse Rewards
+          </button>
+        </div>
+      </section>
+
+      <section>
+        <h2 className="text-lg font-bold mb-4 px-2 font-headline">Waste We Accept</h2>
+        <div className="grid grid-cols-2 gap-3">
+          {acceptedWasteTypes.map(type => (
+            <div key={type.id} className="bg-white p-4 rounded-[1.5rem] border border-primary/10 shadow-sm flex flex-col items-center text-center">
+              <span className="text-3xl mb-2">{type.icon}</span>
+              <span className="font-bold text-sm block">{type.title}</span>
+              <span className="text-[10px] text-muted-foreground mt-1 leading-tight">{type.description.substring(0, 40)}...</span>
+            </div>
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+
+  const renderChecklist = () => (
+    <div className="pb-24 pt-6 px-4 animate-in slide-in-from-right-4">
+      <button onClick={() => navigate("home")} className="mb-6 flex items-center gap-2 text-muted-foreground text-sm font-medium">
+        <ArrowLeft size={16} /> Back to Dashboard
+      </button>
+      
+      <div className="mb-8">
+        <Badge className="mb-2 bg-primary/10 text-primary border-none">Step 1 of 3</Badge>
+        <h2 className="text-2xl font-bold font-headline">Quality Checklist</h2>
+        <p className="text-muted-foreground text-sm">Help us ensure your waste can be effectively recycled.</p>
+      </div>
+
+      <div className="space-y-4 mb-8">
+        {checklistItems.map(item => (
+          <div 
+            key={item.id} 
+            onClick={() => toggleCheck(item.id)}
+            className={`flex items-center gap-4 p-5 rounded-3xl border-2 transition-all cursor-pointer ${
+              checks[item.id] ? "border-primary bg-primary/5" : "border-muted bg-white"
+            }`}
+          >
+            <div className={`w-10 h-10 rounded-full flex items-center justify-center text-xl transition-all ${
+              checks[item.id] ? "bg-primary text-white" : "bg-muted text-muted-foreground"
+            }`}>
+              {checks[item.id] ? <CheckCircle2 size={24} /> : item.icon}
+            </div>
+            <div className="flex-1">
+              <h3 className="font-bold text-sm">{item.title}</h3>
+              <p className="text-[11px] text-muted-foreground">{item.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <button 
+        disabled={!allChecked}
+        onClick={() => navigate("scan-choice")}
+        className={`w-full btn-primary ${!allChecked ? "opacity-50 grayscale cursor-not-allowed" : ""}`}
+      >
+        Continue to Scanning
+      </button>
+    </div>
+  );
+
+  const renderScanChoice = () => (
+    <div className="pb-24 pt-6 px-4 animate-in slide-in-from-right-4">
+      <button onClick={() => navigate("checklist")} className="mb-6 flex items-center gap-2 text-muted-foreground text-sm font-medium">
+        <ArrowLeft size={16} /> Back to Checklist
+      </button>
+
+      <div className="mb-8 text-center">
+        <h2 className="text-2xl font-bold font-headline">AI Detection</h2>
+        <p className="text-muted-foreground text-sm">Choose how you want to detect your waste.</p>
+      </div>
+
+      <div className="space-y-6">
+        <button 
+          onClick={() => navigate("camera")}
+          className="w-full p-8 rounded-[2rem] border-2 border-primary/20 bg-white flex flex-col items-center gap-4 hover:border-primary transition-all group"
+        >
+          <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all">
+            <Camera size={32} />
+          </div>
+          <div>
+            <h3 className="font-bold text-lg">Live Camera Scan</h3>
+            <p className="text-xs text-muted-foreground">Detect waste in real-time as you point your camera</p>
+          </div>
+        </button>
+
+        <label className="w-full p-8 rounded-[2rem] border-2 border-dashed border-muted bg-white flex flex-col items-center gap-4 cursor-pointer hover:border-primary transition-all">
+          <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" />
+          <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center text-primary">
+            <Upload size={32} />
+          </div>
+          <div>
+            <h3 className="font-bold text-lg">Upload Photo</h3>
+            <p className="text-xs text-muted-foreground">Select a photo from your gallery to analyze</p>
+          </div>
+        </label>
+      </div>
+
+      {isAnalyzing && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex flex-col items-center justify-center text-white p-6 text-center">
+          <div className="spinner mb-6" />
+          <h3 className="text-xl font-bold mb-2 font-headline tracking-tight">AI is Analyzing...</h3>
+          <p className="text-sm text-white/70">Identifying waste types and calculating estimated points.</p>
+        </div>
+      )}
+    </div>
+  );
+
+  const renderBooking = () => (
+    <div className="pb-24 pt-6 px-4 animate-in slide-in-from-right-4">
+      <button onClick={() => navigate("scan-choice")} className="mb-6 flex items-center gap-2 text-muted-foreground text-sm font-medium">
+        <ArrowLeft size={16} /> Back to Scanning
+      </button>
+
+      <div className="mb-6">
+        <Badge className="mb-2 bg-primary/10 text-primary border-none">Step 2 of 3</Badge>
+        <h2 className="text-2xl font-bold font-headline">Detection Summary</h2>
+      </div>
+
+      {scanResult && (
+        <Card className="rounded-[1.5rem] border-none shadow-md bg-white mb-6 overflow-hidden">
+          <div className="bg-primary/5 p-4 border-b border-primary/10">
+            <div className="flex justify-between items-center">
+              <span className="text-xs font-bold uppercase text-primary">Est. Points</span>
+              <span className="text-2xl font-bold text-primary">{scanResult.totalPoints} pts</span>
+            </div>
+          </div>
+          <CardContent className="p-4">
+            <div className="space-y-3 mb-4">
+              {scanResult.items.map((item, idx) => (
+                <div key={idx} className="flex justify-between items-center">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xl">{item.emoji}</span>
+                    <span className="text-sm font-medium">{item.label}</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Badge variant="outline" className="text-[10px]">x{item.quantity} {item.unit}</Badge>
+                    <span className="text-xs font-bold text-primary">+{item.points}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <p className="text-[11px] text-muted-foreground bg-secondary/50 p-3 rounded-xl italic">
+              "{scanResult.summary}"
+            </p>
+          </CardContent>
+        </Card>
+      )}
+
+      <h2 className="text-xl font-bold mb-4 font-headline">Schedule Pickup</h2>
+      
+      <Card className="rounded-[1.5rem] border-none shadow-sm bg-white mb-4">
+        <CardContent className="p-4 flex items-center gap-4">
+          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+            <MapPin size={20} />
+          </div>
+          <div className="flex-1">
+            <p className="text-xs font-bold">42/5 Sukhumvit Soi 24</p>
+            <p className="text-[10px] text-muted-foreground">Bangkok, 10110</p>
+          </div>
+          <Button variant="ghost" size="sm" className="text-primary text-[10px] font-bold">Edit</Button>
+        </CardContent>
+      </Card>
+
+      <div className="grid grid-cols-2 gap-3 mb-6">
+        <Card className="rounded-[1.5rem] border-none shadow-sm bg-white p-3">
+          <div className="flex items-center gap-2 mb-2 text-primary">
+            <CalendarIcon size={14} />
+            <span className="text-[10px] font-bold uppercase tracking-wider">Select Date</span>
+          </div>
+          <p className="text-xs font-bold">{selectedDate}</p>
+        </Card>
+        <Card className="rounded-[1.5rem] border-none shadow-sm bg-white p-3">
+          <div className="flex items-center gap-2 mb-2 text-primary">
+            <Clock size={14} />
+            <span className="text-[10px] font-bold uppercase tracking-wider">Select Slot</span>
+          </div>
+          <p className="text-xs font-bold">{selectedSlot.label}</p>
+        </Card>
+      </div>
+
+      <div className="space-y-3 mb-8">
+        <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground px-2">Choose Collection Strategy</p>
+        {pickupSlots.map(slot => (
+          <div 
+            key={slot.id}
+            onClick={() => setSelectedSlot(slot)}
+            className={`p-4 rounded-2xl border-2 transition-all cursor-pointer relative ${
+              selectedSlot.id === slot.id ? "border-primary bg-primary/5" : "border-muted bg-white"
+            }`}
+          >
+            {slot.eco && (
+              <Badge className="absolute -top-2 -right-2 bg-accent text-accent-foreground border-none text-[8px] font-bold px-2 py-0.5">
+                ECO BONUS +20
+              </Badge>
+            )}
+            <div className="flex justify-between items-center">
+              <div>
+                <h4 className="font-bold text-sm">{slot.label}</h4>
+                <p className="text-[10px] text-muted-foreground">{slot.description}</p>
+              </div>
+              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                selectedSlot.id === slot.id ? "border-primary bg-primary" : "border-muted"
+              }`}>
+                {selectedSlot.id === slot.id && <div className="w-2 h-2 rounded-full bg-white" />}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <button 
+        onClick={() => {
+          setPoints(prev => prev + (scanResult?.totalPoints || 0) + selectedSlot.bonus);
+          navigate("confirmation");
+        }}
+        className="w-full btn-primary"
+      >
+        Confirm Pickup & Earn 🌿
+      </button>
+    </div>
+  );
+
+  const renderConfirmation = () => (
+    <div className="pb-24 pt-12 px-6 animate-in zoom-in-95 flex flex-col items-center text-center">
+      <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-6 animate-bounce">
+        <CheckCircle2 size={56} />
+      </div>
+      
+      <h2 className="text-3xl font-bold font-headline mb-2 tracking-tight">Booking Confirmed!</h2>
+      <p className="text-muted-foreground text-sm mb-8 leading-relaxed">
+        Our driver will be there on <strong>{selectedDate}</strong> between <strong>{selectedSlot.label}</strong>.
+      </p>
+
+      <Card className="w-full rounded-[2rem] p-8 border-none shadow-2xl bg-white mb-8">
+        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-4">Your Pickup Pass</p>
+        <div className="bg-muted aspect-square rounded-2xl mb-6 p-6 flex items-center justify-center relative">
+          {/* Simple QR Mock */}
+          <div className="grid grid-cols-5 gap-1.5 w-full aspect-square">
+            {Array.from({ length: 25 }).map((_, i) => (
+              <div key={i} className={`rounded-[4px] ${Math.random() > 0.4 ? "bg-foreground" : "bg-transparent"}`} />
+            ))}
+          </div>
+          <div className="absolute inset-0 flex items-center justify-center">
+             <div className="bg-white p-2 rounded-lg shadow-md border-2 border-primary">
+                <Recycle size={24} className="text-primary" />
+             </div>
+          </div>
+        </div>
+        <div className="flex flex-col gap-1">
+          <span className="text-xs text-muted-foreground">Booking ID</span>
+          <span className="text-xl font-bold font-headline tracking-[4px]">GL-992-883</span>
+        </div>
+      </Card>
+
+      <div className="w-full space-y-4">
+        <button onClick={() => navigate("home")} className="w-full btn-primary">
+          Back to Dashboard
+        </button>
+        <button onClick={shareImpact} className="w-full btn-outline">
+          <Share2 size={18} /> Share My Impact
+        </button>
+      </div>
+    </div>
+  );
+
+  const renderRewards = () => (
+    <div className="pb-24 pt-6 px-4 animate-in slide-in-from-right-4">
+      <header className="flex justify-between items-center mb-8">
+        <div>
+          <h1 className="text-2xl font-bold font-headline">Eco Rewards</h1>
+          <p className="text-sm text-muted-foreground">Turn your points into value. 🎁</p>
+        </div>
+        <div className="bg-primary/5 p-3 rounded-2xl border border-primary/10">
+          <div className="flex items-center gap-1">
+            <span className="text-lg font-bold text-primary font-headline">{points}</span>
+            <span className="text-[10px] font-bold text-primary/60">pts</span>
+          </div>
+        </div>
+      </header>
+
+      <section className="mb-8">
+        <h2 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-4 px-2">Available Rewards</h2>
+        <div className="space-y-4">
+          {rewardItems.map(reward => (
+            <div 
+              key={reward.id} 
+              className={`bg-white p-4 rounded-[1.5rem] border shadow-sm flex items-center gap-4 transition-all ${
+                reward.locked ? "opacity-60" : "hover:border-primary"
+              }`}
+            >
+              <div className="w-16 h-16 rounded-2xl bg-secondary flex items-center justify-center text-3xl">
+                {reward.icon}
+              </div>
+              <div className="flex-1">
+                <div className="flex justify-between items-start mb-0.5">
+                   <h3 className="font-bold text-sm leading-tight">{reward.title}</h3>
+                   <span className={`text-[10px] font-bold ${points >= reward.cost ? "text-primary" : "text-muted-foreground"}`}>
+                     {reward.cost} pts
+                   </span>
+                </div>
+                <p className="text-[10px] text-muted-foreground leading-tight mb-2">{reward.description}</p>
+                <Button 
+                  disabled={points < reward.cost || reward.locked}
+                  size="sm" 
+                  className={`h-7 px-4 rounded-full text-[10px] font-bold ${
+                    points >= reward.cost && !reward.locked ? "btn-primary" : "bg-muted text-muted-foreground"
+                  }`}
+                  onClick={() => setRewardCode({ title: reward.title, code: reward.code })}
+                >
+                  {reward.locked ? "Coming Soon" : points >= reward.cost ? "Redeem Now" : "Need More Pts"}
+                </Button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section>
+        <h2 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-4 px-2">Recent Activity</h2>
+        <Card className="rounded-[1.5rem] border-none shadow-sm bg-white overflow-hidden">
+          <div className="divide-y">
+            {activityHistory.map(activity => (
+              <div key={activity.id} className="p-4 flex justify-between items-center">
+                <div>
+                  <p className="text-xs font-bold">{activity.title}</p>
+                  <p className="text-[9px] text-muted-foreground">{activity.date}</p>
+                </div>
+                <div className={`font-bold text-sm ${activity.points > 0 ? "text-primary" : "text-destructive"}`}>
+                  {activity.points > 0 ? `+${activity.points}` : activity.points}
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      </section>
+
+      {rewardCode && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-6 animate-in fade-in zoom-in-95">
+           <Card className="w-full max-w-sm rounded-[2rem] p-8 text-center bg-white shadow-2xl relative">
+              <div className="w-20 h-20 rounded-full bg-accent/10 flex items-center justify-center text-4xl mx-auto mb-6">🎁</div>
+              <h3 className="text-2xl font-bold font-headline mb-2">{rewardCode.title}</h3>
+              <p className="text-sm text-muted-foreground mb-8">Use the code below at checkout to redeem your reward.</p>
+              
+              <div className="bg-secondary p-5 rounded-2xl mb-8 relative group cursor-pointer active:scale-95 transition-all">
+                <span className="text-2xl font-bold font-headline tracking-[4px] text-primary">{rewardCode.code}</span>
+                <p className="text-[9px] text-primary/60 font-bold uppercase mt-2 tracking-widest">Tap to Copy</p>
+              </div>
+
+              <Button onClick={() => setRewardCode(null)} className="w-full btn-primary h-14 rounded-2xl">
+                Awesome!
+              </Button>
+           </Card>
+        </div>
+      )}
+    </div>
+  );
+
+  return (
+    <main className="max-w-md mx-auto min-h-screen bg-background relative font-body shadow-2xl">
+      <div className="min-h-screen">
+        {currentScreen === "home" && renderHome()}
+        {currentScreen === "checklist" && renderChecklist()}
+        {currentScreen === "scan-choice" && renderScanChoice()}
+        {currentScreen === "booking" && renderBooking()}
+        {currentScreen === "confirmation" && renderConfirmation()}
+        {currentScreen === "rewards" && renderRewards()}
+        
+        {currentScreen === "camera" && (
+          <div className="animate-in slide-in-from-right-4">
+            <header className="p-4 flex items-center gap-4 bg-background border-b sticky top-0 z-10">
+              <button onClick={() => navigate("scan-choice")} className="p-2 hover:bg-muted rounded-full transition-colors">
+                <ArrowLeft size={20} />
+              </button>
+              <h1 className="text-lg font-bold font-headline">Live Scan</h1>
+            </header>
+            <div className="p-4">
+              <CameraScanner active={currentScreen === "camera"} onDetection={handleLiveDetection} />
+              <div className="mt-8 text-center px-6">
+                <p className="text-sm font-medium mb-2">Point at your items</p>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Our AI will identify materials like PET bottles, cardboard, aluminum cans, and electronics.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <nav className="bottom-nav rounded-t-[2.5rem] shadow-[0_-8px_30px_rgb(0,0,0,0.04)]">
+        <button onClick={() => navigate("home")} className={`nav-item ${currentScreen === "home" ? "active" : ""}`}>
+          <Home size={22} className={currentScreen === "home" ? "text-primary fill-primary/10" : "text-muted-foreground"} />
+          <span className="mt-1">Home</span>
+        </button>
+        <button onClick={() => navigate("checklist")} className={`nav-item ${["checklist", "scan-choice", "camera", "upload", "booking"].includes(currentScreen) ? "active" : ""}`}>
+          <Recycle size={22} className={["checklist", "scan-choice", "camera", "upload", "booking"].includes(currentScreen) ? "text-primary fill-primary/10" : "text-muted-foreground"} />
+          <span className="mt-1">Submit</span>
+        </button>
+        <button onClick={() => navigate("rewards")} className={`nav-item ${currentScreen === "rewards" ? "active" : ""}`}>
+          <Gift size={22} className={currentScreen === "rewards" ? "text-primary fill-primary/10" : "text-muted-foreground"} />
+          <span className="mt-1">Rewards</span>
+        </button>
+        <button className="nav-item">
+          <User size={22} className="text-muted-foreground" />
+          <span className="mt-1">Profile</span>
+        </button>
+      </nav>
+    </main>
+  );
 }
