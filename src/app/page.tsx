@@ -1,8 +1,6 @@
-
 "use client";
 
-import { useState, useEffect } from "react";
-import Image from "next/image";
+import { useState } from "react";
 import { 
   acceptedWasteTypes, 
   checklistItems, 
@@ -16,6 +14,8 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { useToast } from "@/hooks/use-toast";
+import { Toaster } from "@/components/ui/toaster";
 import { 
   Home, 
   Recycle, 
@@ -29,10 +29,7 @@ import {
   Calendar as CalendarIcon, 
   Clock, 
   Share2,
-  Trophy,
   Trees,
-  TrendingUp,
-  Info,
   Coins
 } from "lucide-react";
 
@@ -47,6 +44,7 @@ export default function GreenLoopApp() {
   const [selectedDate, setSelectedDate] = useState("April 22, 2026");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [rewardCode, setRewardCode] = useState<{ title: string; code: string } | null>(null);
+  const { toast } = useToast();
 
   const nextTierPoints = 1000;
   const progress = (points / nextTierPoints) * 100;
@@ -74,8 +72,13 @@ export default function GreenLoopApp() {
         const result = await aiWasteDetectionUpload({ photoDataUri: dataUri });
         setScanResult(result);
         navigate("booking");
-      } catch (err) {
+      } catch (err: any) {
         console.error("Upload error:", err);
+        toast({
+          variant: "destructive",
+          title: "AI Scan Error",
+          description: "Quota exceeded or API error. Please try again in a few minutes.",
+        });
       } finally {
         setIsAnalyzing(false);
       }
@@ -443,7 +446,6 @@ export default function GreenLoopApp() {
       <Card className="w-full rounded-[2rem] p-8 border-none shadow-2xl bg-white mb-8">
         <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-4">Your Pickup Pass</p>
         <div className="bg-muted aspect-square rounded-2xl mb-6 p-6 flex items-center justify-center relative">
-          {/* Simple QR Mock */}
           <div className="grid grid-cols-5 gap-1.5 w-full aspect-square">
             {Array.from({ length: 25 }).map((_, i) => (
               <div key={i} className={`rounded-[4px] ${Math.random() > 0.4 ? "bg-foreground" : "bg-transparent"}`} />
@@ -613,6 +615,7 @@ export default function GreenLoopApp() {
           <span className="mt-1">Profile</span>
         </button>
       </nav>
+      <Toaster />
     </main>
   );
 }
