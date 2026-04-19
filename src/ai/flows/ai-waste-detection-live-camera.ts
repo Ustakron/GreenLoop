@@ -2,7 +2,7 @@
 'use server';
 /**
  * @fileOverview This file implements a Genkit flow for real-time AI waste detection
- * using a live camera feed or uploaded photo.
+ * using a live camera feed. It supports identifying multiple items and counts.
  *
  * - aiWasteDetectionLiveCamera - The function that handles AI waste detection.
  */
