@@ -67,20 +67,26 @@ const aiWasteDetectionPrompt = ai.definePrompt({
   name: 'aiWasteDetectionPrompt',
   input: {schema: AiWasteDetectionInputSchema},
   output: {schema: AiWasteDetectionOutputSchema},
-  model: 'googleai/gemini-2.5-flash',
+  model: 'googleai/gemini-2.0-flash',
   prompt: `You are an expert waste identification AI. 
   
-  Analyze the provided image carefully and identify recyclable items from these categories:
+  Analyze the provided image carefully and identify ALL recyclable items from these categories:
   ${wasteTypesFormatted}
+
+  Counting Rules:
+  - Identify and count every single item visible.
+  - If there are multiple identical items (e.g., 3 plastic bottles), group them into ONE entry with quantity set to 3.
+  - If there are different items (e.g., a bottle and a box), list them as separate items in the list.
 
   Point calculation rules:
   - PET/HDPE Plastics: 5 pts per item
   - Cardboard/Paper: 10 pts per item
   - Metal Cans: 3 pts per item
   - E-Waste: 20 pts per item
+  - IMPORTANT: The 'points' field for an item should be (quantity * points_per_item).
 
-  Return a list of detected items, the total points, and an encouraging summary in English.
-  Example summary sentiment: "Excellent! You've made a great start in waste sorting. Let's keep protecting our planet through recycling together!"
+  Return a list of detected items, the total points (sum of all item points), and an encouraging summary in English.
+  Summary sentiment: "Excellent! You've made a great start in waste sorting. Let's keep protecting our planet through recycling together!"
 
   Image: {{media url=photoDataUri}}`,
 });
