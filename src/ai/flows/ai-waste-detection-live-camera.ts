@@ -1,4 +1,3 @@
-
 'use server';
 /**
  * @fileOverview This file implements a Genkit flow for real-time AI waste detection
@@ -68,7 +67,7 @@ const aiWasteDetectionPrompt = ai.definePrompt({
   name: 'aiWasteDetectionPrompt',
   input: {schema: AiWasteDetectionInputSchema},
   output: {schema: AiWasteDetectionOutputSchema},
-  model: 'googleai/gemini-1.5-flash',
+  model: 'googleai/gemini-2.5-flash',
   prompt: `You are an expert waste identification AI. 
   
   Analyze the provided image carefully and identify recyclable items from these categories:

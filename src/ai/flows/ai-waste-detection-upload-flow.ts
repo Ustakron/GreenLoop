@@ -1,4 +1,3 @@
-
 'use server';
 /**
  * @fileOverview An AI agent for detecting recyclable waste from a photo.
@@ -35,7 +34,7 @@ const wasteDetectionPrompt = ai.definePrompt({
   name: 'wasteDetectionUploadPrompt',
   input: { schema: AiWasteDetectionUploadInputSchema },
   output: { schema: AiWasteDetectionUploadOutputSchema },
-  model: 'googleai/gemini-1.5-flash',
+  model: 'googleai/gemini-2.5-flash',
   prompt: `Identify recyclable waste from the photo. Focus on Plastics, Paper, Metals, and E-Waste.
   Estimate quantity and points. Be encouraging. Write the summary in Thai.
 
