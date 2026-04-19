@@ -68,7 +68,7 @@ const aiWasteDetectionPrompt = ai.definePrompt({
   name: 'aiWasteDetectionPrompt',
   input: {schema: AiWasteDetectionInputSchema},
   output: {schema: AiWasteDetectionOutputSchema},
-  model: 'googleai/gemini-1.5-flash',
+  model: 'googleai/gemini-2.5-flash',
   prompt: `You are an expert waste identification AI. 
   
   Analyze the provided image carefully and identify ALL recyclable items from these categories:

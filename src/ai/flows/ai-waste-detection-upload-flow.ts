@@ -35,7 +35,7 @@ const wasteDetectionPrompt = ai.definePrompt({
   name: 'wasteDetectionUploadPrompt',
   input: { schema: AiWasteDetectionUploadInputSchema },
   output: { schema: AiWasteDetectionUploadOutputSchema },
-  model: 'googleai/gemini-1.5-flash',
+  model: 'googleai/gemini-2.5-flash',
   prompt: `Identify ALL recyclable waste from the photo. Focus on Plastics, Paper, Metals, and E-Waste.
   
   Counting Rules:
