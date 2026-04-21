@@ -8,9 +8,10 @@ import { Camera, RefreshCw } from "lucide-react";
 interface CameraScannerProps {
   active: boolean;
   onDetection: (output: AiWasteDetectionOutput) => void;
+  onScanningStateChange?: (isScanning: boolean) => void;
 }
 
-export function CameraScanner({ active, onDetection }: CameraScannerProps) {
+export function CameraScanner({ active, onDetection, onScanningStateChange }: CameraScannerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isScanning, setIsScanning] = useState(false);
@@ -54,6 +55,8 @@ export function CameraScanner({ active, onDetection }: CameraScannerProps) {
     if (!videoRef.current || !canvasRef.current || isScanning) return;
 
     setIsScanning(true);
+    onScanningStateChange?.(true);
+    
     const context = canvasRef.current.getContext("2d");
     if (!context) return;
 
@@ -72,6 +75,7 @@ export function CameraScanner({ active, onDetection }: CameraScannerProps) {
       console.error("Detection error:", err);
     } finally {
       setIsScanning(false);
+      onScanningStateChange?.(false);
     }
   }
 

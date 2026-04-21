@@ -315,14 +315,6 @@ export default function GreenLoopApp() {
           </div>
         </label>
       </div>
-
-      {isAnalyzing && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex flex-col items-center justify-center text-white p-6 text-center">
-          <div className="spinner mb-6" />
-          <h3 className="text-xl font-bold mb-2 font-headline tracking-tight">AI is Analyzing...</h3>
-          <p className="text-sm text-white/70">Identifying waste types and calculating estimated points.</p>
-        </div>
-      )}
     </div>
   );
 
@@ -710,7 +702,11 @@ export default function GreenLoopApp() {
               <h1 className="text-lg font-bold font-headline">Live Scan</h1>
             </header>
             <div className="p-4">
-              <CameraScanner active={currentScreen === "camera"} onDetection={handleLiveDetection} />
+              <CameraScanner 
+                active={currentScreen === "camera"} 
+                onDetection={handleLiveDetection}
+                onScanningStateChange={setIsAnalyzing}
+              />
               <div className="mt-8 text-center px-6">
                 <p className="text-sm font-medium mb-2">Point at your items</p>
                 <p className="text-xs text-muted-foreground leading-relaxed">
@@ -721,6 +717,14 @@ export default function GreenLoopApp() {
           </div>
         )}
       </div>
+
+      {isAnalyzing && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex flex-col items-center justify-center text-white p-6 text-center">
+          <div className="spinner mb-6" />
+          <h3 className="text-xl font-bold mb-2 font-headline tracking-tight">AI is Analyzing...</h3>
+          <p className="text-sm text-white/70">Identifying waste types and calculating estimated points.</p>
+        </div>
+      )}
 
       <nav className="bottom-nav rounded-t-[2.5rem] shadow-[0_-8px_30px_rgb(0,0,0,0.04)]">
         <button onClick={() => navigate("home")} className={`nav-item ${currentScreen === "home" ? "active" : ""}`}>
