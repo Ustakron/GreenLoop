@@ -6,8 +6,7 @@ import {
   acceptedWasteTypes, 
   checklistItems, 
   pickupSlots, 
-  rewardItems, 
-  activityHistory 
+  rewardItems 
 } from "@/lib/greenloop-data";
 import { CameraScanner } from "@/components/camera-scanner";
 import { aiWasteDetectionUpload, type AiWasteDetectionUploadOutput } from "@/ai/flows/ai-waste-detection-upload-flow";
@@ -27,11 +26,8 @@ import {
   Camera, 
   Upload, 
   MapPin, 
-  Calendar as CalendarIcon, 
   Clock, 
-  Share2,
   Trees,
-  Coins,
   Settings,
   Bell,
   Shield,
@@ -105,7 +101,7 @@ export default function GreenLoopApp() {
       <header className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-2xl font-bold text-primary font-headline">GreenLoop</h1>
-          <p className="text-sm text-muted-foreground">Good morning, Eco Hero! 👋</p>
+          <p className="text-sm text-muted-foreground">Welcome back, Eco Hero! 👋</p>
         </div>
         <div className="flex items-center gap-2" onClick={() => navigate("profile")}>
           <Badge variant="secondary" className="bg-primary/10 text-primary border-none py-1">🌿 Eco Member</Badge>
@@ -138,22 +134,22 @@ export default function GreenLoopApp() {
       </section>
 
       <div className="grid grid-cols-2 gap-4 mb-8">
-        <Card className="rounded-[1.5rem] border-none shadow-sm bg-accent/5">
-          <CardContent className="p-4 flex flex-col items-center text-center">
-            <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center mb-2">
-              <Recycle className="text-accent-foreground" size={20} />
-            </div>
-            <span className="text-lg font-bold font-headline">14.2 kg</span>
-            <span className="text-[10px] text-muted-foreground">Recycled This Month</span>
-          </CardContent>
-        </Card>
         <Card className="rounded-[1.5rem] border-none shadow-sm bg-primary/5">
           <CardContent className="p-4 flex flex-col items-center text-center">
             <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center mb-2">
               <Trees className="text-primary" size={20} />
             </div>
             <span className="text-lg font-bold font-headline">3 Trees</span>
-            <span className="text-[10px] text-muted-foreground">Equivalent Saved</span>
+            <span className="text-[10px] text-muted-foreground">Environment Saved</span>
+          </CardContent>
+        </Card>
+        <Card className="rounded-[1.5rem] border-none shadow-sm bg-accent/5">
+          <CardContent className="p-4 flex flex-col items-center text-center">
+            <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center mb-2">
+              <Recycle className="text-accent-foreground" size={20} />
+            </div>
+            <span className="text-lg font-bold font-headline">14.2 kg</span>
+            <span className="text-[10px] text-muted-foreground">Waste Recycled</span>
           </CardContent>
         </Card>
       </div>
@@ -181,13 +177,25 @@ export default function GreenLoopApp() {
       <section>
         <h2 className="text-lg font-bold mb-4 px-2 font-headline">Waste We Accept</h2>
         <div className="grid grid-cols-2 gap-3">
-          {acceptedWasteTypes.map(type => (
-            <div key={type.id} className="bg-white p-4 rounded-[1.5rem] border border-primary/10 shadow-sm flex flex-col items-center text-center">
-              <span className="text-3xl mb-2">{type.icon}</span>
-              <span className="font-bold text-sm block">{type.title}</span>
-              <span className="text-[10px] text-muted-foreground mt-1 leading-tight">{type.description.substring(0, 40)}...</span>
-            </div>
-          ))}
+          {acceptedWasteTypes.map(type => {
+            const pointsMap: Record<string, number> = {
+              "plastics": 5,
+              "paper": 10,
+              "metals": 3,
+              "ewaste": 20
+            };
+            const pts = pointsMap[type.id] || 0;
+            return (
+              <div key={type.id} className="bg-white p-4 rounded-[1.5rem] border border-primary/10 shadow-sm flex flex-col items-center text-center relative">
+                <Badge variant="secondary" className="absolute top-2 right-2 bg-primary/10 text-primary border-none text-[9px]">
+                  {pts} pts/ea
+                </Badge>
+                <span className="text-3xl mb-2 mt-2">{type.icon}</span>
+                <span className="font-bold text-sm block">{type.title}</span>
+                <span className="text-[10px] text-muted-foreground mt-1 leading-tight">{type.description.substring(0, 40)}...</span>
+              </div>
+            );
+          })}
         </div>
       </section>
     </div>
@@ -258,7 +266,7 @@ export default function GreenLoopApp() {
           </div>
           <div>
             <h3 className="font-bold text-lg">Live Camera Scan</h3>
-            <p className="text-xs text-muted-foreground">Detect waste in real-time as you point your camera</p>
+            <p className="text-xs text-muted-foreground">Detect waste in real-time</p>
           </div>
         </button>
 
@@ -269,7 +277,7 @@ export default function GreenLoopApp() {
           </div>
           <div>
             <h3 className="font-bold text-lg">Upload Photo</h3>
-            <p className="text-xs text-muted-foreground">Select a photo from your gallery to analyze</p>
+            <p className="text-xs text-muted-foreground">Select a photo from your gallery</p>
           </div>
         </label>
       </div>
@@ -291,7 +299,7 @@ export default function GreenLoopApp() {
         <Card className="rounded-[1.5rem] border-none shadow-md bg-white mb-6 overflow-hidden">
           <div className="bg-primary/5 p-4 border-b border-primary/10">
             <div className="flex justify-between items-center">
-              <span className="text-xs font-bold uppercase text-primary">Est. Points Earned</span>
+              <span className="text-xs font-bold uppercase text-primary">Points to be Earned</span>
               <span className="text-2xl font-bold text-primary">+{scanResult.totalPoints} pts</span>
             </div>
           </div>
@@ -322,7 +330,7 @@ export default function GreenLoopApp() {
       <div className="mb-6">
         <h3 className="text-xs font-bold uppercase text-muted-foreground mb-3 px-1">Select Date</h3>
         <div className="flex gap-3 overflow-x-auto pb-2 px-1 scrollbar-hide">
-          {["April 22, 2026", "April 23, 2026", "April 24, 2026", "April 25, 2026"].map((date) => (
+          {["April 22, 2026", "April 23, 2026", "April 24, 2026"].map((date) => (
             <button
               key={date}
               onClick={() => setSelectedDate(date)}
@@ -404,7 +412,7 @@ export default function GreenLoopApp() {
       
       <h2 className="text-3xl font-bold font-headline mb-2 tracking-tight">Confirmed!</h2>
       <p className="text-muted-foreground text-sm mb-8 leading-relaxed">
-        Our driver will be there on <strong>{selectedDate}</strong>.
+        Our driver will arrive on <strong>{selectedDate}</strong>.
       </p>
 
       <Card className="w-full rounded-[2rem] p-8 border-none shadow-2xl bg-white mb-8">
@@ -515,13 +523,12 @@ export default function GreenLoopApp() {
       </div>
 
       <section className="mb-8 overflow-x-auto pb-2">
-        <h3 className="text-xs font-bold uppercase text-muted-foreground mb-4 px-2">Recent Achievements</h3>
+        <h3 className="text-xs font-bold uppercase text-muted-foreground mb-4 px-2">Achievements</h3>
         <div className="flex gap-4 px-2">
           {[
             { icon: Leaf, label: "Nature Lover", color: "text-green-500" },
             { icon: Recycle, label: "Pro Sorter", color: "text-blue-500" },
-            { icon: Trophy, label: "Top 1%", color: "text-yellow-500" },
-            { icon: Trees, label: "Forest Hero", color: "text-emerald-500" }
+            { icon: Trophy, label: "Top 1%", color: "text-yellow-500" }
           ].map((item, i) => (
             <div key={i} className="flex flex-col items-center min-w-[80px]">
               <div className={`w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center mb-2 ${item.color}`}>
@@ -534,7 +541,7 @@ export default function GreenLoopApp() {
       </section>
 
       <section className="mb-8">
-        <h3 className="text-xs font-bold uppercase text-muted-foreground mb-4 px-2">Account Settings</h3>
+        <h3 className="text-xs font-bold uppercase text-muted-foreground mb-4 px-2">Account</h3>
         <Card className="rounded-[1.5rem] border-none shadow-sm bg-white overflow-hidden">
           <div className="divide-y">
             {[
