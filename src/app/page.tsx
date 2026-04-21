@@ -319,6 +319,58 @@ export default function GreenLoopApp() {
 
       <h2 className="text-xl font-bold mb-4 font-headline">Schedule Pickup</h2>
       
+      <div className="mb-6">
+        <h3 className="text-xs font-bold uppercase text-muted-foreground mb-3 px-1">Select Date</h3>
+        <div className="flex gap-3 overflow-x-auto pb-2 px-1 scrollbar-hide">
+          {["April 22, 2026", "April 23, 2026", "April 24, 2026", "April 25, 2026"].map((date) => (
+            <button
+              key={date}
+              onClick={() => setSelectedDate(date)}
+              className={`flex-none px-5 py-3 rounded-2xl border-2 transition-all ${
+                selectedDate === date 
+                ? "border-primary bg-primary/5 text-primary font-bold shadow-sm" 
+                : "border-muted bg-white text-muted-foreground"
+              }`}
+            >
+              <div className="text-[10px] uppercase opacity-60 mb-1">{date.split(' ')[0]}</div>
+              <div className="text-sm">{date.split(' ')[1].replace(',', '')}</div>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="mb-6">
+        <h3 className="text-xs font-bold uppercase text-muted-foreground mb-3 px-1">Select Time Slot</h3>
+        <div className="space-y-3">
+          {pickupSlots.map((slot) => (
+            <div
+              key={slot.id}
+              onClick={() => setSelectedSlot(slot)}
+              className={`p-4 rounded-2xl border-2 cursor-pointer transition-all flex items-center justify-between ${
+                selectedSlot.id === slot.id 
+                ? "border-primary bg-primary/5 shadow-sm" 
+                : "border-muted bg-white"
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${selectedSlot.id === slot.id ? "bg-primary text-white" : "bg-muted text-muted-foreground"}`}>
+                  <Clock size={16} />
+                </div>
+                <div>
+                  <p className="text-sm font-bold">{slot.label}</p>
+                  <p className="text-[10px] text-muted-foreground">{slot.description}</p>
+                </div>
+              </div>
+              {slot.bonus > 0 && (
+                <Badge className="bg-accent text-accent-foreground border-none text-[10px]">
+                  +{slot.bonus} pts Bonus
+                </Badge>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
       <Card className="rounded-[1.5rem] border-none shadow-sm bg-white mb-8">
         <CardContent className="p-4 flex items-center gap-4">
           <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
