@@ -16,6 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Toaster } from "@/components/ui/toaster";
+import { Separator } from "@/components/ui/separator";
 import { 
   Home, 
   Recycle, 
@@ -30,10 +31,18 @@ import {
   Clock, 
   Share2,
   Trees,
-  Coins
+  Coins,
+  Settings,
+  Bell,
+  Shield,
+  HelpCircle,
+  LogOut,
+  ChevronRight,
+  Trophy,
+  Leaf
 } from "lucide-react";
 
-type Screen = "home" | "checklist" | "scan-choice" | "camera" | "upload" | "booking" | "confirmation" | "rewards";
+type Screen = "home" | "checklist" | "scan-choice" | "camera" | "upload" | "booking" | "confirmation" | "rewards" | "profile";
 
 export default function GreenLoopApp() {
   const [currentScreen, setCurrentScreen] = useState<Screen>("home");
@@ -102,9 +111,9 @@ export default function GreenLoopApp() {
           <h1 className="text-2xl font-bold text-primary font-headline">GreenLoop</h1>
           <p className="text-sm text-muted-foreground">Good morning, Eco Hero! 👋</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2" onClick={() => navigate("profile")}>
           <Badge variant="secondary" className="bg-primary/10 text-primary border-none py-1">🌿 Eco Member</Badge>
-          <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold border-2 border-white shadow-sm">JD</div>
+          <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold border-2 border-white shadow-sm cursor-pointer">JD</div>
         </div>
       </header>
 
@@ -566,6 +575,121 @@ export default function GreenLoopApp() {
     </div>
   );
 
+  const renderProfile = () => (
+    <div className="pb-24 pt-6 px-4 animate-in slide-in-from-bottom-4">
+      <header className="flex justify-between items-center mb-8">
+        <h1 className="text-2xl font-bold font-headline">Eco Profile</h1>
+        <Button variant="ghost" size="icon" className="rounded-full">
+          <Settings size={20} className="text-muted-foreground" />
+        </Button>
+      </header>
+
+      <div className="flex flex-col items-center mb-8">
+        <div className="relative mb-4">
+          <div className="w-24 h-24 rounded-full bg-primary/20 flex items-center justify-center text-3xl font-bold text-primary border-4 border-white shadow-lg overflow-hidden">
+            JD
+          </div>
+          <div className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-accent flex items-center justify-center border-2 border-white shadow-sm">
+            <Trophy size={14} className="text-accent-foreground" />
+          </div>
+        </div>
+        <h2 className="text-xl font-bold">John Doe</h2>
+        <p className="text-sm text-muted-foreground">Eco Hero Level 12</p>
+        <Badge className="mt-2 bg-primary/10 text-primary border-none">🌿 2.4 Tons CO2 Saved</Badge>
+      </div>
+
+      <div className="grid grid-cols-3 gap-3 mb-8">
+        <Card className="rounded-2xl border-none shadow-sm bg-white p-3 text-center">
+          <p className="text-[10px] font-bold text-muted-foreground uppercase mb-1">Rank</p>
+          <p className="text-lg font-bold text-primary">#42</p>
+        </Card>
+        <Card className="rounded-2xl border-none shadow-sm bg-white p-3 text-center">
+          <p className="text-[10px] font-bold text-muted-foreground uppercase mb-1">Impact</p>
+          <p className="text-lg font-bold text-primary">High</p>
+        </Card>
+        <Card className="rounded-2xl border-none shadow-sm bg-white p-3 text-center">
+          <p className="text-[10px] font-bold text-muted-foreground uppercase mb-1">Badges</p>
+          <p className="text-lg font-bold text-primary">12</p>
+        </Card>
+      </div>
+
+      <section className="mb-8">
+        <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-4 px-2">Account Settings</h3>
+        <Card className="rounded-[1.5rem] border-none shadow-sm bg-white overflow-hidden">
+          <div className="divide-y">
+            <div className="p-4 flex items-center justify-between cursor-pointer hover:bg-muted/30 transition-colors">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                  <User size={18} />
+                </div>
+                <span className="text-sm font-medium">Personal Information</span>
+              </div>
+              <ChevronRight size={16} className="text-muted-foreground" />
+            </div>
+            <div className="p-4 flex items-center justify-between cursor-pointer hover:bg-muted/30 transition-colors">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center text-accent">
+                  <Bell size={18} />
+                </div>
+                <span className="text-sm font-medium">Notifications</span>
+              </div>
+              <ChevronRight size={16} className="text-muted-foreground" />
+            </div>
+            <div className="p-4 flex items-center justify-between cursor-pointer hover:bg-muted/30 transition-colors">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-primary">
+                  <Shield size={18} />
+                </div>
+                <span className="text-sm font-medium">Privacy & Security</span>
+              </div>
+              <ChevronRight size={16} className="text-muted-foreground" />
+            </div>
+            <div className="p-4 flex items-center justify-between cursor-pointer hover:bg-muted/30 transition-colors">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
+                  <HelpCircle size={18} />
+                </div>
+                <span className="text-sm font-medium">Help & Support</span>
+              </div>
+              <ChevronRight size={16} className="text-muted-foreground" />
+            </div>
+          </div>
+        </Card>
+      </section>
+
+      <section className="mb-8">
+        <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-4 px-2">Achievements</h3>
+        <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
+          <div className="flex-shrink-0 w-24 flex flex-col items-center text-center">
+            <div className="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center mb-2 border-2 border-accent/40">
+              <Leaf size={28} className="text-accent-foreground" />
+            </div>
+            <span className="text-[10px] font-bold">Nature Lover</span>
+          </div>
+          <div className="flex-shrink-0 w-24 flex flex-col items-center text-center">
+            <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mb-2 border-2 border-primary/40">
+              <Recycle size={28} className="text-primary" />
+            </div>
+            <span className="text-[10px] font-bold">Pro Sorter</span>
+          </div>
+          <div className="flex-shrink-0 w-24 flex flex-col items-center text-center">
+            <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-2 border-2 border-dashed border-muted-foreground/30 opacity-50">
+               <Trophy size={28} className="text-muted-foreground" />
+            </div>
+            <span className="text-[10px] font-bold text-muted-foreground">Master Recycler</span>
+          </div>
+        </div>
+      </section>
+
+      <Button variant="ghost" className="w-full h-14 rounded-2xl text-destructive hover:text-destructive hover:bg-destructive/5 flex items-center justify-center gap-2 font-bold mb-4">
+        <LogOut size={20} />
+        Sign Out
+      </Button>
+      
+      <p className="text-center text-[10px] text-muted-foreground uppercase tracking-widest">GreenLoop v1.4.2</p>
+    </div>
+  );
+
   return (
     <main className="max-w-md mx-auto min-h-screen bg-background relative font-body shadow-2xl">
       <div className="min-h-screen">
@@ -575,6 +699,7 @@ export default function GreenLoopApp() {
         {currentScreen === "booking" && renderBooking()}
         {currentScreen === "confirmation" && renderConfirmation()}
         {currentScreen === "rewards" && renderRewards()}
+        {currentScreen === "profile" && renderProfile()}
         
         {currentScreen === "camera" && (
           <div className="animate-in slide-in-from-right-4">
@@ -610,8 +735,8 @@ export default function GreenLoopApp() {
           <Gift size={22} className={currentScreen === "rewards" ? "text-primary fill-primary/10" : "text-muted-foreground"} />
           <span className="mt-1">Rewards</span>
         </button>
-        <button className="nav-item">
-          <User size={22} className="text-muted-foreground" />
+        <button onClick={() => navigate("profile")} className={`nav-item ${currentScreen === "profile" ? "active" : ""}`}>
+          <User size={22} className={currentScreen === "profile" ? "text-primary fill-primary/10" : "text-muted-foreground"} />
           <span className="mt-1">Profile</span>
         </button>
       </nav>
