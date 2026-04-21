@@ -446,7 +446,14 @@ export default function GreenLoopApp() {
                 disabled={points < reward.cost || reward.locked}
                 size="sm" 
                 className="h-7 px-4 rounded-full text-[10px] font-bold"
-                onClick={() => setRewardCode({ title: reward.title, code: reward.code })}
+                onClick={() => {
+                  setPoints(prev => prev - reward.cost);
+                  setRewardCode({ title: reward.title, code: reward.code });
+                  toast({
+                    title: "Reward Redeemed!",
+                    description: `You spent ${reward.cost} pts on ${reward.title}.`,
+                  });
+                }}
               >
                 {reward.locked ? "Locked" : `Redeem ${reward.cost} pts`}
               </Button>
