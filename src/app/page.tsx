@@ -420,7 +420,7 @@ export default function GreenLoopApp() {
   const renderProfile = () => (
     <div className="pb-24 pt-6 px-4 animate-in slide-in-from-bottom-4">
       <header className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold font-headline">Eco Profile</h1>
+        <h1 className="text-2xl font-bold font-headline text-foreground">Eco Profile</h1>
         <Button variant="ghost" size="icon" className="rounded-full">
           <Settings size={20} className="text-muted-foreground" />
         </Button>
@@ -437,16 +437,16 @@ export default function GreenLoopApp() {
         </div>
         <h2 className="text-xl font-bold">John Doe</h2>
         <p className="text-sm text-muted-foreground">Eco Hero Level 12</p>
-        <Badge className="mt-2 bg-primary/10 text-primary border-none">🌿 2.4 Tons CO2 Saved</Badge>
+        <Badge className="mt-2 bg-primary/10 text-primary border-none px-3 py-1">🌿 2.4 Tons CO2 Saved</Badge>
       </div>
 
       <div className="grid grid-cols-3 gap-3 mb-8">
         <Card className="rounded-2xl border-none shadow-sm bg-white p-3 text-center">
-          <p className="text-[10px] font-bold text-muted-foreground uppercase">Rank</p>
+          <p className="text-[10px] font-bold text-muted-foreground uppercase">Global Rank</p>
           <p className="text-lg font-bold text-primary">#42</p>
         </Card>
         <Card className="rounded-2xl border-none shadow-sm bg-white p-3 text-center">
-          <p className="text-[10px] font-bold text-muted-foreground uppercase">Impact</p>
+          <p className="text-[10px] font-bold text-muted-foreground uppercase">Impact Level</p>
           <p className="text-lg font-bold text-primary">High</p>
         </Card>
         <Card className="rounded-2xl border-none shadow-sm bg-white p-3 text-center">
@@ -455,8 +455,27 @@ export default function GreenLoopApp() {
         </Card>
       </div>
 
+      <section className="mb-8 overflow-x-auto pb-2">
+        <h3 className="text-xs font-bold uppercase text-muted-foreground mb-4 px-2">Recent Achievements</h3>
+        <div className="flex gap-4 px-2">
+          {[
+            { icon: Leaf, label: "Nature Lover", color: "text-green-500" },
+            { icon: Recycle, label: "Pro Sorter", color: "text-blue-500" },
+            { icon: Trophy, label: "Top 1%", color: "text-yellow-500" },
+            { icon: Trees, label: "Forest Hero", color: "text-emerald-500" }
+          ].map((item, i) => (
+            <div key={i} className="flex flex-col items-center min-w-[80px]">
+              <div className={`w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center mb-2 ${item.color}`}>
+                <item.icon size={28} />
+              </div>
+              <span className="text-[10px] font-medium text-center">{item.label}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
       <section className="mb-8">
-        <h3 className="text-xs font-bold uppercase text-muted-foreground mb-4 px-2">Settings</h3>
+        <h3 className="text-xs font-bold uppercase text-muted-foreground mb-4 px-2">Account Settings</h3>
         <Card className="rounded-[1.5rem] border-none shadow-sm bg-white overflow-hidden">
           <div className="divide-y">
             {[
@@ -477,7 +496,7 @@ export default function GreenLoopApp() {
         </Card>
       </section>
 
-      <Button variant="ghost" className="w-full h-14 rounded-2xl text-destructive hover:bg-destructive/5 font-bold">
+      <Button variant="ghost" className="w-full h-14 rounded-2xl text-destructive hover:bg-destructive/5 font-bold mb-4">
         <LogOut size={20} className="mr-2" /> Sign Out
       </Button>
     </div>
