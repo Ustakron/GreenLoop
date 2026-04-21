@@ -35,7 +35,8 @@ import {
   LogOut,
   ChevronRight,
   Trophy,
-  Leaf
+  Leaf,
+  Coins
 } from "lucide-react";
 
 type Screen = "home" | "checklist" | "scan-choice" | "camera" | "upload" | "booking" | "confirmation" | "rewards" | "profile";
@@ -104,13 +105,11 @@ export default function GreenLoopApp() {
           <p className="text-sm text-muted-foreground">Welcome back, Eco Hero! 👋</p>
         </div>
         <div className="flex items-center gap-2" onClick={() => navigate("profile")}>
-          <Badge variant="secondary" className="bg-primary/10 text-primary border-none py-1">🌿 Eco Member</Badge>
           <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold border-2 border-white shadow-sm cursor-pointer">JD</div>
         </div>
       </header>
 
       <section className="bg-white rounded-[2rem] p-6 shadow-xl shadow-primary/5 mb-8 relative overflow-hidden">
-        <div className="absolute -top-12 -right-12 w-40 h-40 bg-primary/5 rounded-full blur-2xl" />
         <div className="relative z-10">
           <div className="flex justify-between items-end mb-4">
             <div>
@@ -133,40 +132,19 @@ export default function GreenLoopApp() {
         </div>
       </section>
 
-      <div className="grid grid-cols-2 gap-4 mb-8">
-        <Card className="rounded-[1.5rem] border-none shadow-sm bg-primary/5">
-          <CardContent className="p-4 flex flex-col items-center text-center">
-            <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center mb-2">
-              <Trees className="text-primary" size={20} />
-            </div>
-            <span className="text-lg font-bold font-headline">3 Trees</span>
-            <span className="text-[10px] text-muted-foreground">Environment Saved</span>
-          </CardContent>
-        </Card>
-        <Card className="rounded-[1.5rem] border-none shadow-sm bg-accent/5">
-          <CardContent className="p-4 flex flex-col items-center text-center">
-            <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center mb-2">
-              <Recycle className="text-accent-foreground" size={20} />
-            </div>
-            <span className="text-lg font-bold font-headline">14.2 kg</span>
-            <span className="text-[10px] text-muted-foreground">Waste Recycled</span>
-          </CardContent>
-        </Card>
-      </div>
-
       <section className="mb-8">
         <h2 className="text-lg font-bold mb-4 px-2 font-headline">Quick Actions</h2>
-        <div className="space-y-4">
+        <div className="space-y-3">
           <button 
             onClick={() => navigate("checklist")}
-            className="w-full btn-primary"
+            className="w-full bg-primary text-white rounded-2xl h-14 font-bold flex items-center justify-center gap-2 shadow-sm"
           >
             <Camera size={20} />
             Scan Waste to Earn
           </button>
           <button 
             onClick={() => navigate("rewards")}
-            className="w-full btn-outline"
+            className="w-full border-2 border-primary/20 bg-white text-primary rounded-2xl h-14 font-bold flex items-center justify-center gap-2"
           >
             <Gift size={20} />
             Browse Rewards
@@ -174,28 +152,48 @@ export default function GreenLoopApp() {
         </div>
       </section>
 
+      {/* Point Guide Section */}
+      <section className="mb-8">
+        <div className="bg-[#FFFCEB] rounded-[2.5rem] p-6 border border-[#F5E6A3]/30">
+          <div className="flex items-center gap-2 mb-3">
+             <Coins className="text-yellow-600" size={20} />
+             <h2 className="text-lg font-bold font-headline">Point Guide</h2>
+          </div>
+          <p className="text-[11px] text-muted-foreground mb-5 leading-relaxed">
+            Earn points for every item you recycle. Points can be exchanged for exclusive rewards and vouchers!
+          </p>
+          
+          <div className="grid grid-cols-2 gap-3">
+            {[
+              { label: "Plastics", points: "10-20 pts", icon: "🧴" },
+              { label: "Paper", points: "5-15 pts", icon: "📦" },
+              { label: "Metals", points: "20-30 pts", icon: "🥫" },
+              { label: "E-Waste", points: "50-100 pts", icon: "📱" }
+            ].map((item, i) => (
+              <div key={i} className="bg-white p-3 rounded-2xl shadow-sm flex items-center gap-3">
+                <span className="text-xl">{item.icon}</span>
+                <div>
+                  <p className="text-[11px] font-bold">{item.label}</p>
+                  <p className="text-[10px] text-green-600 font-medium">{item.points}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section>
         <h2 className="text-lg font-bold mb-4 px-2 font-headline">Waste We Accept</h2>
         <div className="grid grid-cols-2 gap-3">
-          {acceptedWasteTypes.map(type => {
-            const pointsMap: Record<string, number> = {
-              "plastics": 5,
-              "paper": 10,
-              "metals": 3,
-              "ewaste": 20
-            };
-            const pts = pointsMap[type.id] || 0;
-            return (
-              <div key={type.id} className="bg-white p-4 rounded-[1.5rem] border border-primary/10 shadow-sm flex flex-col items-center text-center relative">
-                <Badge variant="secondary" className="absolute top-2 right-2 bg-primary/10 text-primary border-none text-[9px]">
-                  {pts} pts/ea
-                </Badge>
-                <span className="text-3xl mb-2 mt-2">{type.icon}</span>
-                <span className="font-bold text-sm block">{type.title}</span>
-                <span className="text-[10px] text-muted-foreground mt-1 leading-tight">{type.description.substring(0, 40)}...</span>
-              </div>
-            );
-          })}
+          {acceptedWasteTypes.map(type => (
+            <div key={type.id} className="bg-white p-5 rounded-[2rem] border border-primary/5 shadow-sm flex flex-col items-center text-center">
+              <span className="text-4xl mb-3">{type.icon}</span>
+              <span className="font-bold text-sm block mb-1">{type.title}</span>
+              <span className="text-[10px] text-muted-foreground leading-tight">
+                {type.description.split('. ')[0]}...
+              </span>
+            </div>
+          ))}
         </div>
       </section>
     </div>
@@ -569,7 +567,7 @@ export default function GreenLoopApp() {
   );
 
   return (
-    <main className="max-w-md mx-auto min-h-screen bg-background relative font-body shadow-2xl">
+    <main className="max-w-md mx-auto min-h-screen bg-[#F7FAF9] relative font-body shadow-2xl">
       <div className="min-h-screen">
         {currentScreen === "home" && renderHome()}
         {currentScreen === "checklist" && renderChecklist()}
@@ -606,14 +604,14 @@ export default function GreenLoopApp() {
         </div>
       )}
 
-      <nav className="bottom-nav rounded-t-[2.5rem]">
+      <nav className="bottom-nav rounded-t-[2.5rem] bg-white">
         <button onClick={() => navigate("home")} className={`nav-item ${currentScreen === "home" ? "active" : ""}`}>
           <Home size={22} />
           <span className="mt-1">Home</span>
         </button>
         <button onClick={() => navigate("checklist")} className={`nav-item ${["checklist", "scan-choice", "camera", "upload", "booking"].includes(currentScreen) ? "active" : ""}`}>
           <Recycle size={22} />
-          <span className="mt-1">Scan</span>
+          <span className="mt-1">Submit</span>
         </button>
         <button onClick={() => navigate("rewards")} className={`nav-item ${currentScreen === "rewards" ? "active" : ""}`}>
           <Gift size={22} />
