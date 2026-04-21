@@ -47,7 +47,6 @@ const AiWasteDetectionInputSchema = z.object({
 export type AiWasteDetectionInput = z.infer<typeof AiWasteDetectionInputSchema>;
 
 const DetectedItemSchema = z.object({
-  id: z.string(),
   emoji: z.string(),
   label: z.string(),
   quantity: z.number().int(),
