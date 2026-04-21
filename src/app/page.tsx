@@ -86,7 +86,7 @@ export default function GreenLoopApp() {
         toast({
           variant: "destructive",
           title: "AI Scan Error",
-          description: "Quota exceeded or API error. Please try again in a few minutes.",
+          description: "Could not process image. Please check your connection or quota.",
         });
       } finally {
         setIsAnalyzing(false);
@@ -98,10 +98,6 @@ export default function GreenLoopApp() {
   const handleLiveDetection = (result: any) => {
     setScanResult(result);
     navigate("booking");
-  };
-
-  const shareImpact = () => {
-    alert("Sharing your impact of 28kg CO2 saved to social media! 🌿🌍");
   };
 
   const renderHome = () => (
@@ -179,44 +175,6 @@ export default function GreenLoopApp() {
             <Gift size={20} />
             Browse Rewards
           </button>
-        </div>
-      </section>
-
-      <section className="mb-8 bg-accent/5 p-5 rounded-[2rem] border border-accent/20">
-        <div className="flex items-center gap-2 mb-3">
-          <Coins className="text-accent" size={20} />
-          <h2 className="text-lg font-bold font-headline">Point Guide</h2>
-        </div>
-        <p className="text-[11px] text-muted-foreground mb-4">Earn points for every item you recycle. Points can be exchanged for exclusive rewards and vouchers!</p>
-        <div className="grid grid-cols-2 gap-2">
-          <div className="bg-white/80 p-2 rounded-xl text-[10px] flex items-center gap-2">
-             <span className="text-lg">🧴</span>
-             <div>
-               <p className="font-bold">Plastics</p>
-               <p className="text-primary">10-20 pts</p>
-             </div>
-          </div>
-          <div className="bg-white/80 p-2 rounded-xl text-[10px] flex items-center gap-2">
-             <span className="text-lg">📦</span>
-             <div>
-               <p className="font-bold">Paper</p>
-               <p className="text-primary">5-15 pts</p>
-             </div>
-          </div>
-          <div className="bg-white/80 p-2 rounded-xl text-[10px] flex items-center gap-2">
-             <span className="text-lg">🥫</span>
-             <div>
-               <p className="font-bold">Metals</p>
-               <p className="text-primary">20-30 pts</p>
-             </div>
-          </div>
-          <div className="bg-white/80 p-2 rounded-xl text-[10px] flex items-center gap-2">
-             <span className="text-lg">📱</span>
-             <div>
-               <p className="font-bold">E-Waste</p>
-               <p className="text-primary">50-100 pts</p>
-             </div>
-          </div>
         </div>
       </section>
 
@@ -361,7 +319,7 @@ export default function GreenLoopApp() {
 
       <h2 className="text-xl font-bold mb-4 font-headline">Schedule Pickup</h2>
       
-      <Card className="rounded-[1.5rem] border-none shadow-sm bg-white mb-4">
+      <Card className="rounded-[1.5rem] border-none shadow-sm bg-white mb-8">
         <CardContent className="p-4 flex items-center gap-4">
           <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
             <MapPin size={20} />
@@ -373,53 +331,6 @@ export default function GreenLoopApp() {
           <Button variant="ghost" size="sm" className="text-primary text-[10px] font-bold">Edit</Button>
         </CardContent>
       </Card>
-
-      <div className="grid grid-cols-2 gap-3 mb-6">
-        <Card className="rounded-[1.5rem] border-none shadow-sm bg-white p-3">
-          <div className="flex items-center gap-2 mb-2 text-primary">
-            <CalendarIcon size={14} />
-            <span className="text-[10px] font-bold uppercase tracking-wider">Select Date</span>
-          </div>
-          <p className="text-xs font-bold">{selectedDate}</p>
-        </Card>
-        <Card className="rounded-[1.5rem] border-none shadow-sm bg-white p-3">
-          <div className="flex items-center gap-2 mb-2 text-primary">
-            <Clock size={14} />
-            <span className="text-[10px] font-bold uppercase tracking-wider">Select Slot</span>
-          </div>
-          <p className="text-xs font-bold">{selectedSlot.label}</p>
-        </Card>
-      </div>
-
-      <div className="space-y-3 mb-8">
-        <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground px-2">Choose Collection Strategy</p>
-        {pickupSlots.map(slot => (
-          <div 
-            key={slot.id}
-            onClick={() => setSelectedSlot(slot)}
-            className={`p-4 rounded-2xl border-2 transition-all cursor-pointer relative ${
-              selectedSlot.id === slot.id ? "border-primary bg-primary/5" : "border-muted bg-white"
-            }`}
-          >
-            {slot.eco && (
-              <Badge className="absolute -top-2 -right-2 bg-accent text-accent-foreground border-none text-[8px] font-bold px-2 py-0.5">
-                ECO BONUS +20
-              </Badge>
-            )}
-            <div className="flex justify-between items-center">
-              <div>
-                <h4 className="font-bold text-sm">{slot.label}</h4>
-                <p className="text-[10px] text-muted-foreground">{slot.description}</p>
-              </div>
-              <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                selectedSlot.id === slot.id ? "border-primary bg-primary" : "border-muted"
-              }`}>
-                {selectedSlot.id === slot.id && <div className="w-2 h-2 rounded-full bg-white" />}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
 
       <button 
         onClick={() => {
@@ -439,128 +350,67 @@ export default function GreenLoopApp() {
         <CheckCircle2 size={56} />
       </div>
       
-      <h2 className="text-3xl font-bold font-headline mb-2 tracking-tight">Booking Confirmed!</h2>
+      <h2 className="text-3xl font-bold font-headline mb-2 tracking-tight">Confirmed!</h2>
       <p className="text-muted-foreground text-sm mb-8 leading-relaxed">
-        Our driver will be there on <strong>{selectedDate}</strong> between <strong>{selectedSlot.label}</strong>.
+        Our driver will be there on <strong>{selectedDate}</strong>.
       </p>
 
       <Card className="w-full rounded-[2rem] p-8 border-none shadow-2xl bg-white mb-8">
         <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-4">Your Pickup Pass</p>
-        <div className="bg-muted aspect-square rounded-2xl mb-6 p-6 flex items-center justify-center relative">
-          <div className="grid grid-cols-5 gap-1.5 w-full aspect-square">
-            {Array.from({ length: 25 }).map((_, i) => (
-              <div key={i} className={`rounded-[4px] ${Math.random() > 0.4 ? "bg-foreground" : "bg-transparent"}`} />
-            ))}
-          </div>
-          <div className="absolute inset-0 flex items-center justify-center">
-             <div className="bg-white p-2 rounded-lg shadow-md border-2 border-primary">
-                <Recycle size={24} className="text-primary" />
-             </div>
-          </div>
-        </div>
         <div className="flex flex-col gap-1">
           <span className="text-xs text-muted-foreground">Booking ID</span>
           <span className="text-xl font-bold font-headline tracking-[4px]">GL-992-883</span>
         </div>
       </Card>
 
-      <div className="w-full space-y-4">
-        <button onClick={() => navigate("home")} className="w-full btn-primary">
-          Back to Dashboard
-        </button>
-        <button onClick={shareImpact} className="w-full btn-outline">
-          <Share2 size={18} /> Share My Impact
-        </button>
-      </div>
+      <button onClick={() => navigate("home")} className="w-full btn-primary">
+        Back to Dashboard
+      </button>
     </div>
   );
 
   const renderRewards = () => (
     <div className="pb-24 pt-6 px-4 animate-in slide-in-from-right-4">
       <header className="flex justify-between items-center mb-8">
-        <div>
-          <h1 className="text-2xl font-bold font-headline">Eco Rewards</h1>
-          <p className="text-sm text-muted-foreground">Turn your points into value. 🎁</p>
-        </div>
+        <h1 className="text-2xl font-bold font-headline">Eco Rewards</h1>
         <div className="bg-primary/5 p-3 rounded-2xl border border-primary/10">
-          <div className="flex items-center gap-1">
-            <span className="text-lg font-bold text-primary font-headline">{points}</span>
-            <span className="text-[10px] font-bold text-primary/60">pts</span>
-          </div>
+          <span className="text-lg font-bold text-primary">{points} pts</span>
         </div>
       </header>
 
-      <section className="mb-8">
-        <h2 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-4 px-2">Available Rewards</h2>
-        <div className="space-y-4">
-          {rewardItems.map(reward => (
-            <div 
-              key={reward.id} 
-              className={`bg-white p-4 rounded-[1.5rem] border shadow-sm flex items-center gap-4 transition-all ${
-                reward.locked ? "opacity-60" : "hover:border-primary"
-              }`}
-            >
-              <div className="w-16 h-16 rounded-2xl bg-secondary flex items-center justify-center text-3xl">
-                {reward.icon}
-              </div>
-              <div className="flex-1">
-                <div className="flex justify-between items-start mb-0.5">
-                   <h3 className="font-bold text-sm leading-tight">{reward.title}</h3>
-                   <span className={`text-[10px] font-bold ${points >= reward.cost ? "text-primary" : "text-muted-foreground"}`}>
-                     {reward.cost} pts
-                   </span>
-                </div>
-                <p className="text-[10px] text-muted-foreground leading-tight mb-2">{reward.description}</p>
-                <Button 
-                  disabled={points < reward.cost || reward.locked}
-                  size="sm" 
-                  className={`h-7 px-4 rounded-full text-[10px] font-bold ${
-                    points >= reward.cost && !reward.locked ? "btn-primary" : "bg-muted text-muted-foreground"
-                  }`}
-                  onClick={() => setRewardCode({ title: reward.title, code: reward.code })}
-                >
-                  {reward.locked ? "Coming Soon" : points >= reward.cost ? "Redeem Now" : "Need More Pts"}
-                </Button>
-              </div>
+      <section className="space-y-4">
+        {rewardItems.map(reward => (
+          <div 
+            key={reward.id} 
+            className="bg-white p-4 rounded-[1.5rem] border shadow-sm flex items-center gap-4"
+          >
+            <div className="w-16 h-16 rounded-2xl bg-secondary flex items-center justify-center text-3xl">
+              {reward.icon}
             </div>
-          ))}
-        </div>
-      </section>
-
-      <section>
-        <h2 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-4 px-2">Recent Activity</h2>
-        <Card className="rounded-[1.5rem] border-none shadow-sm bg-white overflow-hidden">
-          <div className="divide-y">
-            {activityHistory.map(activity => (
-              <div key={activity.id} className="p-4 flex justify-between items-center">
-                <div>
-                  <p className="text-xs font-bold">{activity.title}</p>
-                  <p className="text-[9px] text-muted-foreground">{activity.date}</p>
-                </div>
-                <div className={`font-bold text-sm ${activity.points > 0 ? "text-primary" : "text-destructive"}`}>
-                  {activity.points > 0 ? `+${activity.points}` : activity.points}
-                </div>
-              </div>
-            ))}
+            <div className="flex-1">
+              <h3 className="font-bold text-sm">{reward.title}</h3>
+              <p className="text-[10px] text-muted-foreground mb-2">{reward.description}</p>
+              <Button 
+                disabled={points < reward.cost || reward.locked}
+                size="sm" 
+                className="h-7 px-4 rounded-full text-[10px] font-bold"
+                onClick={() => setRewardCode({ title: reward.title, code: reward.code })}
+              >
+                {reward.locked ? "Locked" : `Redeem ${reward.cost} pts`}
+              </Button>
+            </div>
           </div>
-        </Card>
+        ))}
       </section>
 
       {rewardCode && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-6 animate-in fade-in zoom-in-95">
-           <Card className="w-full max-w-sm rounded-[2rem] p-8 text-center bg-white shadow-2xl relative">
-              <div className="w-20 h-20 rounded-full bg-accent/10 flex items-center justify-center text-4xl mx-auto mb-6">🎁</div>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-6">
+           <Card className="w-full max-w-sm rounded-[2rem] p-8 text-center bg-white shadow-2xl">
               <h3 className="text-2xl font-bold font-headline mb-2">{rewardCode.title}</h3>
-              <p className="text-sm text-muted-foreground mb-8">Use the code below at checkout to redeem your reward.</p>
-              
-              <div className="bg-secondary p-5 rounded-2xl mb-8 relative group cursor-pointer active:scale-95 transition-all">
-                <span className="text-2xl font-bold font-headline tracking-[4px] text-primary">{rewardCode.code}</span>
-                <p className="text-[9px] text-primary/60 font-bold uppercase mt-2 tracking-widest">Tap to Copy</p>
+              <div className="bg-secondary p-5 rounded-2xl mb-8">
+                <span className="text-2xl font-bold tracking-[4px] text-primary">{rewardCode.code}</span>
               </div>
-
-              <Button onClick={() => setRewardCode(null)} className="w-full btn-primary h-14 rounded-2xl">
-                Awesome!
-              </Button>
+              <Button onClick={() => setRewardCode(null)} className="w-full btn-primary">Awesome!</Button>
            </Card>
         </div>
       )}
@@ -578,10 +428,10 @@ export default function GreenLoopApp() {
 
       <div className="flex flex-col items-center mb-8">
         <div className="relative mb-4">
-          <div className="w-24 h-24 rounded-full bg-primary/20 flex items-center justify-center text-3xl font-bold text-primary border-4 border-white shadow-lg overflow-hidden">
+          <div className="w-24 h-24 rounded-full bg-primary/20 flex items-center justify-center text-3xl font-bold text-primary border-4 border-white shadow-lg">
             JD
           </div>
-          <div className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-accent flex items-center justify-center border-2 border-white shadow-sm">
+          <div className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-accent flex items-center justify-center border-2 border-white">
             <Trophy size={14} className="text-accent-foreground" />
           </div>
         </div>
@@ -592,93 +442,44 @@ export default function GreenLoopApp() {
 
       <div className="grid grid-cols-3 gap-3 mb-8">
         <Card className="rounded-2xl border-none shadow-sm bg-white p-3 text-center">
-          <p className="text-[10px] font-bold text-muted-foreground uppercase mb-1">Rank</p>
+          <p className="text-[10px] font-bold text-muted-foreground uppercase">Rank</p>
           <p className="text-lg font-bold text-primary">#42</p>
         </Card>
         <Card className="rounded-2xl border-none shadow-sm bg-white p-3 text-center">
-          <p className="text-[10px] font-bold text-muted-foreground uppercase mb-1">Impact</p>
+          <p className="text-[10px] font-bold text-muted-foreground uppercase">Impact</p>
           <p className="text-lg font-bold text-primary">High</p>
         </Card>
         <Card className="rounded-2xl border-none shadow-sm bg-white p-3 text-center">
-          <p className="text-[10px] font-bold text-muted-foreground uppercase mb-1">Badges</p>
+          <p className="text-[10px] font-bold text-muted-foreground uppercase">Badges</p>
           <p className="text-lg font-bold text-primary">12</p>
         </Card>
       </div>
 
       <section className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-4 px-2">Account Settings</h3>
+        <h3 className="text-xs font-bold uppercase text-muted-foreground mb-4 px-2">Settings</h3>
         <Card className="rounded-[1.5rem] border-none shadow-sm bg-white overflow-hidden">
           <div className="divide-y">
-            <div className="p-4 flex items-center justify-between cursor-pointer hover:bg-muted/30 transition-colors">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                  <User size={18} />
+            {[
+              { icon: User, label: "Personal Information" },
+              { icon: Bell, label: "Notifications" },
+              { icon: Shield, label: "Privacy & Security" },
+              { icon: HelpCircle, label: "Help & Support" }
+            ].map((item, i) => (
+              <div key={i} className="p-4 flex items-center justify-between cursor-pointer hover:bg-muted/30">
+                <div className="flex items-center gap-3">
+                  <item.icon size={18} className="text-primary" />
+                  <span className="text-sm font-medium">{item.label}</span>
                 </div>
-                <span className="text-sm font-medium">Personal Information</span>
+                <ChevronRight size={16} className="text-muted-foreground" />
               </div>
-              <ChevronRight size={16} className="text-muted-foreground" />
-            </div>
-            <div className="p-4 flex items-center justify-between cursor-pointer hover:bg-muted/30 transition-colors">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center text-accent">
-                  <Bell size={18} />
-                </div>
-                <span className="text-sm font-medium">Notifications</span>
-              </div>
-              <ChevronRight size={16} className="text-muted-foreground" />
-            </div>
-            <div className="p-4 flex items-center justify-between cursor-pointer hover:bg-muted/30 transition-colors">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-primary">
-                  <Shield size={18} />
-                </div>
-                <span className="text-sm font-medium">Privacy & Security</span>
-              </div>
-              <ChevronRight size={16} className="text-muted-foreground" />
-            </div>
-            <div className="p-4 flex items-center justify-between cursor-pointer hover:bg-muted/30 transition-colors">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
-                  <HelpCircle size={18} />
-                </div>
-                <span className="text-sm font-medium">Help & Support</span>
-              </div>
-              <ChevronRight size={16} className="text-muted-foreground" />
-            </div>
+            ))}
           </div>
         </Card>
       </section>
 
-      <section className="mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-4 px-2">Achievements</h3>
-        <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
-          <div className="flex-shrink-0 w-24 flex flex-col items-center text-center">
-            <div className="w-16 h-16 rounded-full bg-accent/20 flex items-center justify-center mb-2 border-2 border-accent/40">
-              <Leaf size={28} className="text-accent-foreground" />
-            </div>
-            <span className="text-[10px] font-bold">Nature Lover</span>
-          </div>
-          <div className="flex-shrink-0 w-24 flex flex-col items-center text-center">
-            <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mb-2 border-2 border-primary/40">
-              <Recycle size={28} className="text-primary" />
-            </div>
-            <span className="text-[10px] font-bold">Pro Sorter</span>
-          </div>
-          <div className="flex-shrink-0 w-24 flex flex-col items-center text-center">
-            <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-2 border-2 border-dashed border-muted-foreground/30 opacity-50">
-               <Trophy size={28} className="text-muted-foreground" />
-            </div>
-            <span className="text-[10px] font-bold text-muted-foreground">Master Recycler</span>
-          </div>
-        </div>
-      </section>
-
-      <Button variant="ghost" className="w-full h-14 rounded-2xl text-destructive hover:text-destructive hover:bg-destructive/5 flex items-center justify-center gap-2 font-bold mb-4">
-        <LogOut size={20} />
-        Sign Out
+      <Button variant="ghost" className="w-full h-14 rounded-2xl text-destructive hover:bg-destructive/5 font-bold">
+        <LogOut size={20} className="mr-2" /> Sign Out
       </Button>
-      
-      <p className="text-center text-[10px] text-muted-foreground uppercase tracking-widest">GreenLoop v1.4.2</p>
     </div>
   );
 
@@ -696,7 +497,7 @@ export default function GreenLoopApp() {
         {currentScreen === "camera" && (
           <div className="animate-in slide-in-from-right-4">
             <header className="p-4 flex items-center gap-4 bg-background border-b sticky top-0 z-10">
-              <button onClick={() => navigate("scan-choice")} className="p-2 hover:bg-muted rounded-full transition-colors">
+              <button onClick={() => navigate("scan-choice")} className="p-2">
                 <ArrowLeft size={20} />
               </button>
               <h1 className="text-lg font-bold font-headline">Live Scan</h1>
@@ -707,12 +508,6 @@ export default function GreenLoopApp() {
                 onDetection={handleLiveDetection}
                 onScanningStateChange={setIsAnalyzing}
               />
-              <div className="mt-8 text-center px-6">
-                <p className="text-sm font-medium mb-2">Point at your items</p>
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  Our AI will identify materials like PET bottles, cardboard, aluminum cans, and electronics.
-                </p>
-              </div>
             </div>
           </div>
         )}
@@ -721,26 +516,26 @@ export default function GreenLoopApp() {
       {isAnalyzing && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex flex-col items-center justify-center text-white p-6 text-center">
           <div className="spinner mb-6" />
-          <h3 className="text-xl font-bold mb-2 font-headline tracking-tight">AI is Analyzing...</h3>
-          <p className="text-sm text-white/70">Identifying waste types and calculating estimated points.</p>
+          <h3 className="text-xl font-bold mb-2 font-headline">AI is Analyzing...</h3>
+          <p className="text-sm text-white/70">Identifying waste and calculating points.</p>
         </div>
       )}
 
-      <nav className="bottom-nav rounded-t-[2.5rem] shadow-[0_-8px_30px_rgb(0,0,0,0.04)]">
+      <nav className="bottom-nav rounded-t-[2.5rem]">
         <button onClick={() => navigate("home")} className={`nav-item ${currentScreen === "home" ? "active" : ""}`}>
-          <Home size={22} className={currentScreen === "home" ? "text-primary fill-primary/10" : "text-muted-foreground"} />
+          <Home size={22} />
           <span className="mt-1">Home</span>
         </button>
         <button onClick={() => navigate("checklist")} className={`nav-item ${["checklist", "scan-choice", "camera", "upload", "booking"].includes(currentScreen) ? "active" : ""}`}>
-          <Recycle size={22} className={["checklist", "scan-choice", "camera", "upload", "booking"].includes(currentScreen) ? "text-primary fill-primary/10" : "text-muted-foreground"} />
-          <span className="mt-1">Submit</span>
+          <Recycle size={22} />
+          <span className="mt-1">Scan</span>
         </button>
         <button onClick={() => navigate("rewards")} className={`nav-item ${currentScreen === "rewards" ? "active" : ""}`}>
-          <Gift size={22} className={currentScreen === "rewards" ? "text-primary fill-primary/10" : "text-muted-foreground"} />
+          <Gift size={22} />
           <span className="mt-1">Rewards</span>
         </button>
         <button onClick={() => navigate("profile")} className={`nav-item ${currentScreen === "profile" ? "active" : ""}`}>
-          <User size={22} className={currentScreen === "profile" ? "text-primary fill-primary/10" : "text-muted-foreground"} />
+          <User size={22} />
           <span className="mt-1">Profile</span>
         </button>
       </nav>

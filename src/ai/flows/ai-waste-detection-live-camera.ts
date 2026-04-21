@@ -3,8 +3,6 @@
 /**
  * @fileOverview This file implements a Genkit flow for real-time AI waste detection
  * using a live camera feed. It supports identifying multiple items and counts.
- *
- * - aiWasteDetectionLiveCamera - The function that handles AI waste detection.
  */
 
 import {ai} from '@/ai/genkit';
@@ -75,18 +73,19 @@ const aiWasteDetectionPrompt = ai.definePrompt({
 
   Counting Rules:
   - Identify and count every single item visible.
-  - If there are multiple identical items (e.g., 3 plastic bottles), group them into ONE entry with quantity set to 3.
-  - If there are different items (e.g., a bottle and a box), list them as separate items in the list.
+  - If there are multiple identical items, group them into ONE entry with the correct quantity.
+  - If there are different types of items, list each type as a separate item in the list.
 
   Point calculation rules:
   - PET/HDPE Plastics: 5 pts per item
   - Cardboard/Paper: 10 pts per item
   - Metal Cans: 3 pts per item
   - E-Waste: 20 pts per item
-  - IMPORTANT: The 'points' field for an item should be (quantity * points_per_item).
+  - IMPORTANT: The 'points' field for an entry should be (quantity * points_per_item).
 
-  Return a list of detected items, the total points (sum of all item points), and an encouraging summary in English.
-  Summary sentiment: "Excellent! You've made a great start in waste sorting. Let's keep protecting our planet through recycling together!"
+  Summary instructions:
+  - Return a list of detected items, the total points, and an encouraging summary in English.
+  - Summary sentiment: "Excellent! You've made a great start in waste sorting. Let's keep protecting our planet through recycling together!"
 
   Image: {{media url=photoDataUri}}`,
 });
@@ -105,7 +104,7 @@ const aiWasteDetectionLiveCameraFlow = ai.defineFlow(
       }
       return output;
     } catch (error) {
-      console.error('Flow error:', error);
+      console.error('Live Flow error:', error);
       throw error;
     }
   }
