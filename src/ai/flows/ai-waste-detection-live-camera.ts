@@ -2,7 +2,7 @@
 'use server';
 /**
  * @fileOverview This file implements a Genkit flow for real-time AI waste detection
- * using a live camera feed. It supports identifying multiple items and counts.
+ * using a live camera feed. Implements retry logic for 503/429 errors.
  */
 
 import {ai} from '@/ai/genkit';
@@ -90,6 +90,10 @@ const aiWasteDetectionPrompt = ai.definePrompt({
   Image: {{media url=photoDataUri}}`,
 });
 
+async function sleep(ms: number) {
+  return new Promise((r) => setTimeout(r, ms));
+}
+
 const aiWasteDetectionLiveCameraFlow = ai.defineFlow(
   {
     name: 'aiWasteDetectionLiveCameraFlow',
@@ -97,16 +101,37 @@ const aiWasteDetectionLiveCameraFlow = ai.defineFlow(
     outputSchema: AiWasteDetectionOutputSchema,
   },
   async (input) => {
-    try {
-      const {output} = await aiWasteDetectionPrompt(input);
-      if (!output) {
-        throw new Error('AI failed to return detection results.');
+    const maxRetries = 4;
+    let lastError: any = null;
+
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      try {
+        const {output} = await aiWasteDetectionPrompt(input);
+        if (!output) {
+          throw new Error('AI failed to return detection results.');
+        }
+        return output;
+      } catch (error: any) {
+        lastError = error;
+        const errorMsg = error.message || "";
+        const isTemporary = errorMsg.includes('503') || errorMsg.includes('429') || errorMsg.includes('RESOURCE_EXHAUSTED') || errorMsg.includes('Service Unavailable');
+        
+        if (isTemporary && attempt < maxRetries) {
+          const delay = Math.min(1000 * 2 ** attempt, 8000);
+          await sleep(delay);
+          continue;
+        }
+        break;
       }
-      return output;
-    } catch (error) {
-      console.error('Live Flow error:', error);
-      throw error;
     }
+
+    if (lastError?.message?.includes('503') || lastError?.message?.includes('Service Unavailable')) {
+      throw new Error('AI_BUSY: Gemini is temporarily busy. Please try again shortly.');
+    }
+    if (lastError?.message?.includes('429') || lastError?.message?.includes('RESOURCE_EXHAUSTED')) {
+      throw new Error('QUOTA_EXHAUSTED: AI quota reached. Please check back later.');
+    }
+    throw lastError || new Error('Live camera analysis failed.');
   }
 );
 

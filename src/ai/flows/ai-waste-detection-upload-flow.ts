@@ -2,7 +2,7 @@
 'use server';
 /**
  * @fileOverview An AI agent for detecting and counting recyclable waste from an uploaded photo.
- * It identifies multiple items and groups identical ones with a count.
+ * Implements retry logic with exponential backoff for 503/429 errors.
  */
 
 import {ai} from '@/ai/genkit';
@@ -58,6 +58,10 @@ const wasteDetectionPrompt = ai.definePrompt({
   Photo: {{media url=photoDataUri}}`,
 });
 
+async function sleep(ms: number) {
+  return new Promise((r) => setTimeout(r, ms));
+}
+
 const aiWasteDetectionUploadFlow = ai.defineFlow(
   {
     name: 'aiWasteDetectionUploadFlow',
@@ -65,16 +69,38 @@ const aiWasteDetectionUploadFlow = ai.defineFlow(
     outputSchema: AiWasteDetectionUploadOutputSchema,
   },
   async (input) => {
-    try {
-      const {output} = await wasteDetectionPrompt(input);
-      if (!output) {
-        throw new Error('AI could not analyze the image.');
+    const maxRetries = 4;
+    let lastError: any = null;
+
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      try {
+        const {output} = await wasteDetectionPrompt(input);
+        if (!output) {
+          throw new Error('AI could not analyze the image.');
+        }
+        return output;
+      } catch (error: any) {
+        lastError = error;
+        const errorMsg = error.message || "";
+        const isTemporary = errorMsg.includes('503') || errorMsg.includes('429') || errorMsg.includes('RESOURCE_EXHAUSTED') || errorMsg.includes('Service Unavailable');
+        
+        if (isTemporary && attempt < maxRetries) {
+          const delay = Math.min(1000 * 2 ** attempt, 8000);
+          await sleep(delay);
+          continue;
+        }
+        break;
       }
-      return output;
-    } catch (error) {
-      console.error('Upload Flow error:', error);
-      throw error;
     }
+    
+    // If we get here, it means all retries failed
+    if (lastError?.message?.includes('503') || lastError?.message?.includes('Service Unavailable')) {
+      throw new Error('AI_BUSY: Gemini is temporarily busy. Please try again shortly.');
+    }
+    if (lastError?.message?.includes('429') || lastError?.message?.includes('RESOURCE_EXHAUSTED')) {
+      throw new Error('QUOTA_EXHAUSTED: AI quota reached. Please check back later.');
+    }
+    throw lastError || new Error('AI analysis failed.');
   }
 );
 

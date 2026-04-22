@@ -79,11 +79,26 @@ export default function GreenLoopApp() {
         navigate("booking");
       } catch (err: any) {
         console.error("Upload error:", err);
-        toast({
-          variant: "destructive",
-          title: "AI Scan Error",
-          description: "Could not process image. Please check your connection or quota.",
-        });
+        const errorMsg = err.message || "";
+        if (errorMsg.includes('AI_BUSY')) {
+          toast({
+            variant: "destructive",
+            title: "AI Service Busy",
+            description: "Gemini is busy right now. We tried retrying, but please try again in a moment.",
+          });
+        } else if (errorMsg.includes('QUOTA_EXHAUSTED')) {
+          toast({
+            variant: "destructive",
+            title: "Quota Reached",
+            description: "Daily AI limit reached. Please check back later.",
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "AI Scan Error",
+            description: "Could not process image. Please try again or check your connection.",
+          });
+        }
       } finally {
         setIsAnalyzing(false);
       }

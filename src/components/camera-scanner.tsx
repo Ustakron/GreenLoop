@@ -1,9 +1,11 @@
+
 "use client";
 
 import { useEffect, useRef, useState } from "react";
 import { aiWasteDetectionLiveCamera, type AiWasteDetectionOutput } from "@/ai/flows/ai-waste-detection-live-camera";
 import { Button } from "@/components/ui/button";
 import { Camera, RefreshCw } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface CameraScannerProps {
   active: boolean;
@@ -16,6 +18,7 @@ export function CameraScanner({ active, onDetection, onScanningStateChange }: Ca
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isScanning, setIsScanning] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     let stream: MediaStream | null = null;
@@ -71,8 +74,28 @@ export function CameraScanner({ active, onDetection, onScanningStateChange }: Ca
       if (result) {
         onDetection(result);
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("Detection error:", err);
+      const errorMsg = err.message || "";
+      if (errorMsg.includes('AI_BUSY')) {
+        toast({
+          variant: "destructive",
+          title: "AI Service Busy",
+          description: "Gemini is busy right now. Please try scanning again in a moment.",
+        });
+      } else if (errorMsg.includes('QUOTA_EXHAUSTED')) {
+        toast({
+          variant: "destructive",
+          title: "Quota Reached",
+          description: "Daily AI limit reached. Please check back later.",
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Detection Failed",
+          description: "Something went wrong during scan. Please try again.",
+        });
+      }
     } finally {
       setIsScanning(false);
       onScanningStateChange?.(false);
