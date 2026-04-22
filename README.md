@@ -2,31 +2,28 @@
 
 AI-powered waste detection and recycling rewards platform.
 
-## Tech Stack (ส่วนประกอบของแอป)
+## Tech Stack Summary (สรุปเทคโนโลยีที่ใช้)
 
-1. **Framework:** Next.js 15 (App Router)
-   - ไฟล์หลัก: `src/app/layout.tsx`, `src/app/page.tsx`
-   - หน้าที่: จัดการโครงสร้างเว็บและส่วนติดต่อผู้ใช้ทั้งหมด
+### 1. Frontend (หน้าบ้าน)
+- **Framework:** Next.js 15 (React 19)
+- **Styling:** Tailwind CSS + ShadCN UI (Green/Orange theme)
+- **Icons:** Lucide-React
+- **State Management:** React Hooks (useState, useEffect)
 
-2. **Language:** TypeScript
-   - ไฟล์: ทุกไฟล์นามสกุล `.ts` และ `.tsx`
-   - หน้าที่: ควบคุมความถูกต้องของโค้ด
+### 2. Backend & AI (หลังบ้านและปัญญาประดิษฐ์)
+- **Server Environment:** Node.js (Runtime)
+- **Server Actions:** Next.js Native Actions (รันโค้ดหลังบ้านผ่านไฟล์ตระกูล `.ts` ที่ระบุ `'use server'`)
+- **AI Framework:** Genkit (จัดการ AI Workflow และ Prompt)
+- **AI Model:** Gemini 2.5 Flash (ประมวลผลภาพถ่ายและคำนวณคะแนน)
+- **Error Handling:** Exponential Backoff & Retry (สำหรับจัดการ 503/429 errors)
 
-3. **Styling:** Tailwind CSS + ShadCN UI
-   - ไฟล์หลัก: `src/app/globals.css`, `tailwind.config.ts`
-   - หน้าที่: จัดการความสวยงาม (Green/Orange theme) และ UI Components
+### 3. Infrastructure & Services (โครงสร้างพื้นฐาน)
+- **Platform:** Firebase App Hosting (เซิร์ฟเวอร์สำหรับออนไลน์เว็บ)
+- **Database/Auth:** Firebase SDK (เตรียมพร้อมสำหรับระบบสมาชิกและฐานข้อมูลคะแนน)
+- **Environment:** `.env` (จัดการความลับ เช่น API Keys)
 
-4. **Icons:** Lucide-React
-   - การใช้งาน: เรียกใช้ใน Component ต่างๆ เช่น `Home`, `Recycle`, `Gift`
-
-5. **Generative AI:** Genkit
-   - ไฟล์หลัก: `src/ai/genkit.ts`, `src/ai/flows/`
-   - หน้าที่: เชื่อมต่อและจัดการการทำงานของ AI
-
-6. **AI Model:** Gemini 2.5 Flash
-   - การใช้งาน: ระบุใน Prompt ภายในไฟล์ Flows
-   - หน้าที่: วิเคราะห์ภาพถ่ายขยะ และคำนวณคะแนน (Object Detection)
-
-7. **Platform:** Firebase App Hosting
-   - ไฟล์: `apphosting.yaml`
-   - หน้าที่: ใช้พับบลิชเว็บขึ้นออนไลน์
+## Project Structure (โครงสร้างไฟล์)
+- `src/app/`: จัดการหน้าจอ (Page) และโครงสร้างหลัก (Layout)
+- `src/ai/flows/`: ไฟล์ประมวลผล AI (Backend logic สำหรับวิเคราะห์ขยะ)
+- `src/components/`: ส่วนประกอบหน้าเว็บ (UI Components) และระบบกล้อง (Camera Scanner)
+- `src/lib/`: ข้อมูลจำลองและฟังก์ชันอำนวยความสะดวกต่างๆ
