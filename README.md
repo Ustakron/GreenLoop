@@ -10,20 +10,23 @@ AI-powered waste detection and recycling rewards platform.
 - **Icons:** Lucide-React
 - **State Management:** React Hooks (useState, useEffect)
 
-### 2. Backend & AI
+### 2. Backend
 - **Server Environment:** Node.js Runtime
-- **Server Actions:** Next.js Native Actions (Backend logic defined in `.ts` files with `'use server'`)
-- **AI Framework:** Genkit (Manages AI workflows and prompts)
-- **AI Model:** Gemini 2.5 Flash (Analyzes photos and calculates recycling points)
-- **Error Handling:** Exponential Backoff & Retry (Handles 503/429 AI service errors)
+- **Logic Handling:** Next.js Server Actions (Functions defined with `'use server'` for secure, server-side execution)
+- **AI Integration:** Genkit (Framework for managing AI prompts and structured output)
+- **API Communication:** JSON-based communication between client and server actions
 
-### 3. Infrastructure & Services
-- **Platform:** Firebase App Hosting (Scalable production hosting)
-- **Database/Auth:** Firebase SDK (Ready for user management and point tracking)
-- **Secrets Management:** `.env` (Secure handling of API Keys)
+### 3. AI & Models
+- **Primary Model:** Gemini 2.5 Flash (Used for image analysis, item counting, and point calculation)
+- **Flow Management:** Genkit Flows (Implements retry logic with exponential backoff for 503/429 errors)
+
+### 4. Infrastructure & Services
+- **Platform:** Firebase App Hosting (Managed production hosting for Next.js)
+- **Database & Auth:** Firebase Client SDK (Configured for potential user profile and transaction storage)
+- **Secrets:** Environment variables (.env) for secure API key management
 
 ## Project Structure
 - `src/app/`: Screen definitions and main application layout.
-- `src/ai/flows/`: AI processing logic (Backend flows for waste analysis).
+- `src/ai/flows/`: Backend AI processing logic and prompt definitions.
 - `src/components/`: Reusable UI components and the Camera Scanner system.
-- `src/lib/`: Mock data and utility functions.
+- `src/lib/`: Data models, mock data, and utility functions.
