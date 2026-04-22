@@ -25,3 +25,10 @@ AI-powered waste detection and recycling rewards platform.
 - **Platform:** Firebase App Hosting
 - **Secrets:** Secure .env management for API Keys
 - **Services:** Firebase Client SDK for Auth/Firestore integration
+
+## Reward System Features
+
+- **AI-Powered Valuation:** Automatically calculates recycling points based on waste type and quantity detected via camera.
+- **Dynamic Tiering:** Tracks user progress through achievement tiers (Silver, Gold) to encourage consistent recycling.
+- **Point Redemption:** Exchange earned points for digital vouchers (shipping discounts, cash coupons) and physical eco-products.
+- **Eco-Bonus Incentives:** Earn extra points by choosing "Flexible" pickup slots to help optimize low-carbon transport routes.
