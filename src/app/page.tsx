@@ -27,16 +27,15 @@ import {
   Upload, 
   MapPin, 
   Clock, 
-  Trees,
+  Trophy,
+  Leaf,
+  Coins,
+  ChevronRight,
   Settings,
   Bell,
   Shield,
   HelpCircle,
-  LogOut,
-  ChevronRight,
-  Trophy,
-  Leaf,
-  Coins
+  LogOut
 } from "lucide-react";
 
 type Screen = "home" | "checklist" | "scan-choice" | "camera" | "upload" | "booking" | "confirmation" | "rewards" | "profile";
@@ -152,7 +151,6 @@ export default function GreenLoopApp() {
         </div>
       </section>
 
-      {/* Point Guide Section */}
       <section className="mb-8">
         <div className="bg-[#FFFCEB] rounded-[2.5rem] p-6 border border-[#F5E6A3]/30">
           <div className="flex items-center gap-2 mb-3">
