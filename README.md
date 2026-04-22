@@ -11,9 +11,10 @@ AI-powered waste detection and recycling rewards platform.
 - **State:** React Hooks (useState, useEffect)
 
 ### 2. Backend
-- **Runtime:** Node.js
-- **Logic:** Next.js Server Actions (Secure server-side execution)
-- **AI Orchestration:** Genkit (Manages prompts and structured output)
+- **Next.js Server Actions:** Manages security and data handling (Secure Logic).
+- **Genkit:** Orchestrates AI workflows and logic steps (AI Flow).
+- **Node.js:** Core runtime environment for backend execution (Runtime).
+- **Firebase:** Infrastructure, deployment, and secure API key management (Infrastructure).
 
 ### 3. AI & Models
 - **Primary Model:** Gemini 2.5 Flash
