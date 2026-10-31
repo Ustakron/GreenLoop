@@ -11,8 +11,8 @@ AI-powered waste detection and recycling rewards platform.
 - **State:** React Hooks (useState, useEffect)
 
 ### 2. Backend
-- **Next.js Server Actions:** Manages security and data handling (Secure Logic).
-- **Genkit:** Orchestrates AI workflows and logic steps (AI Flow).
+- **Next.js Server Actions:** Manage security and data handling (Secure Logic).
+- **Genkit:** Orchestrate AI workflows and logic steps (AI Flow).
 - **Node.js:** Core runtime environment for backend execution (Runtime).
 - **Firebase:** Infrastructure, deployment, and secure API key management (Infrastructure).
 
@@ -32,3 +32,11 @@ AI-powered waste detection and recycling rewards platform.
 - **Dynamic Tiering:** Tracks user progress through achievement tiers (Silver, Gold) to encourage consistent recycling.
 - **Point Redemption:** Exchange earned points for digital vouchers (shipping discounts, cash coupons) and physical eco-products.
 - **Eco-Bonus Incentives:** Earn extra points by choosing "Flexible" pickup slots to help optimize low-carbon transport routes.
+
+## How to push to GitHub
+
+1. `git init`
+2. `git add .`
+3. `git commit -m "Initial commit"`
+4. `git remote add origin <YOUR_REPO_URL>`
+5. `git push -u origin main`
